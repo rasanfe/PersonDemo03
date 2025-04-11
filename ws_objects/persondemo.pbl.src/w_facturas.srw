@@ -536,8 +536,8 @@ destroy(this.dw_report)
 destroy(this.dw_1)
 end on
 
-event open;dp_1.value=datetime("01-01-2025")
-dp_2.value=datetime("31-12-2025")
+event open;dp_1.value=datetime("01-04-2025")
+dp_2.value=datetime("22-04-2025")
 
 
 
@@ -798,7 +798,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-11"), Time("13:52:49.000000"))
+datetime value = DateTime(Date("2025-04-11"), Time("21:44:19.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
@@ -820,7 +820,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-11"), Time("13:52:49.000000"))
+datetime value = DateTime(Date("2025-04-11"), Time("21:44:19.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
