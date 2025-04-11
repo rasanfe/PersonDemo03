@@ -1,0 +1,12 @@
+﻿$PBExportHeader$gf_mensaje.srf
+$PBExportComments$Gestiona el mesageBox de forma mas sencia recibe titulo y mensaje.
+global type gf_mensaje from function_object
+end type
+
+forward prototypes
+global subroutine gf_mensaje (string texto1, string texto2)
+end prototypes
+
+global subroutine gf_mensaje (string texto1, string texto2); MessageBox(texto1,texto2,Exclamation!, OK!,1)
+end subroutine
+

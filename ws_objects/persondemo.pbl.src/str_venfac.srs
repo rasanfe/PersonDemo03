@@ -1,0 +1,8 @@
+﻿$PBExportHeader$str_venfac.srs
+global type str_venfac from structure
+	string		as_empresa
+	string		as_anyo
+	string		as_Serie
+	string		as_factura
+end type
+

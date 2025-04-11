@@ -1,0 +1,16 @@
+﻿$PBExportHeader$gf_hoy.srf
+$PBExportComments$date hoy (admin date fecha_trabajo)
+global type gf_hoy from function_object
+end type
+
+forward prototypes
+global function date gf_hoy ()
+end prototypes
+
+global function date gf_hoy ();Date lda_dia
+
+lda_dia=today()
+
+RETURN lda_dia
+end function
+

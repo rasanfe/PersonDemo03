@@ -1,0 +1,27 @@
+﻿$PBExportHeader$gf_replaceall.srf
+global type gf_replaceall from function_object
+end type
+
+forward prototypes
+global function string gf_replaceall (string as_source, string as_replaced, string as_new)
+end prototypes
+
+global function string gf_replaceall (string as_source, string as_replaced, string as_new);// Esta funcion reemplaza todas las ocurrencias de as_replaced por as_new en as_source y lo devuelve
+
+Long ll_StartPos=1
+
+// Find the first occurrence of as_replaced.
+ll_StartPos = Pos(as_source, as_replaced, ll_StartPos)
+
+// Only enter the loop if you find as_replaced.
+DO WHILE ll_StartPos > 0
+	   // Replace as_replaced with as_new.
+    as_source = Replace(as_source, ll_StartPos, Len(as_replaced), as_new)
+      // Find the next occurrence of as_replaced. 
+	ll_StartPos = Pos(as_source, as_replaced, ll_StartPos+Len(as_new))
+LOOP
+
+RETURN as_source  
+
+end function
+

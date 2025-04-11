@@ -1,0 +1,43 @@
+﻿$PBExportHeader$gf_getlibraryfromdatawindow.srf
+global type gf_GetLibraryFromDataWindow from function_object
+end type
+
+forward prototypes
+global function string gf_getlibraryfromdatawindow (string as_dwname)
+end prototypes
+
+global function string gf_getlibraryfromdatawindow (string as_dwname);String ls_libraries, ls_libraryArray[], ls_objects, ls_pbl, ls_lines[]
+Integer li_libCount, li_lineCount, i, j
+String ls_dwname
+
+// Obtener la lista de librerías de la aplicación
+ls_libraries = GetLibraryList()
+    
+// Separar la lista en un array
+li_libCount = gf_parsetoarray(ls_libraries, ",", ls_libraryArray)
+
+// Iterar sobre cada librería
+For i = 1 To li_libCount
+   ls_pbl = Trim(ls_libraryArray[i])  // Asegurar que no haya espacios extra
+
+	// Obtener lista de DataWindows en la librería
+   ls_objects = LibraryDirectory(ls_pbl, DirDataWindow!)
+
+   // Verificar si hay objetos en la librería
+   If ls_objects <> "" Then
+      li_lineCount = gf_parsetoarray(ls_objects, "~n", ls_lines) // Separar por líneas
+      // Buscar el DataWindow en la lista
+       For j = 1 To li_lineCount
+			ls_dwname = left(ls_lines[j], pos(ls_lines[j], "~t") -1)
+         If  ls_dwname = as_dwName Then
+            Return ls_pbl // Devolver la librería donde se encontró
+			End If
+		 Next
+	End If
+Next
+
+// Si no se encuentra, devolver vacío
+Return ""
+
+end function
+

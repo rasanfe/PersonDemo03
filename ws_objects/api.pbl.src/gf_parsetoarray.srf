@@ -1,0 +1,70 @@
+﻿$PBExportHeader$gf_parsetoarray.srf
+global type gf_parsetoarray from function_object
+end type
+
+forward prototypes
+global function integer gf_parsetoarray (string as_source, string as_delimiter, ref string as_array[])
+end prototypes
+
+global function integer gf_parsetoarray (string as_source, string as_delimiter, ref string as_array[]);long    ll_DelLen, ll_Pos, ll_Count, ll_Start, ll_Length, ll_null
+string  ls_holder
+
+// Comprobación de nulos.
+IF IsNull(as_source) or IsNull(as_delimiter) Then
+   SetNull(ll_null)
+   Return ll_null
+End If
+
+// Comprobamos que exista algún texto.
+If Trim (as_source) = '' Then
+   Return 0
+End If
+
+//Reseteamos la Array de Salida por si a caso.
+If UpperBound(as_array[]) > 0 Then as_array[] = {""}
+
+// Obtenemos el tamaño del delimitador.
+ll_DelLen = Len(as_Delimiter)
+
+// Obtenemos la posición de la primera ocurrencia dentro del origen.
+ll_Pos = Pos(as_source, as_Delimiter)
+
+// Solo si existe una entrada.
+If ll_Pos = 0 Then
+   as_Array[1] = as_source
+   Return 1
+End If
+
+// Si hay más de una entrada entramos en un bucle para recoger y asignar
+// al array cada una de ellas.
+ll_Count = 0
+ll_Start = 1
+Do While ll_Pos > 0
+   // Establecemos la entrada actual.
+   ll_Length = ll_Pos - ll_Start
+   ls_holder = Mid(as_source, ll_start, ll_length)
+
+   // Actualizamos la entrada actual y el contador.
+   ll_Count ++
+   as_Array[ll_Count] = ls_holder
+ 
+   // Establecemos la nueva posición de inicio.
+   ll_Start = ll_Pos + ll_DelLen
+
+   // Obtenemos la siguiente posición de la siguiente ocurrencia.
+   ll_Pos =  Pos(as_source, as_Delimiter, ll_Start)
+Loop
+
+// Establecemos la última entrada.
+ls_holder = Mid(as_source, ll_start, Len(as_source))
+
+// Actualizamos el array y el contador si es necesario.
+If Len(ls_holder) > 0 Then
+   ll_count++
+   as_Array[ll_Count] = ls_holder
+End If
+
+// Devolvemos el número de entradas encontradas.
+Return ll_Count
+end function
+
