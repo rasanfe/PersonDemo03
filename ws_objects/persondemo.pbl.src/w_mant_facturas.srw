@@ -444,8 +444,7 @@ boolean vscrollbar = true
 boolean ib_logo = false
 end type
 
-event doubleclicked;call super::doubleclicked;Integer li_rtn
-Any l_values[]
+event doubleclicked;call super::doubleclicked;Any l_values[]
 
 If row < 1 then return
 
