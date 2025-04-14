@@ -312,9 +312,11 @@ Long ll_columnas, ll_RowCount
 String ls_DwSyntax
 Integer li_rtn
 
+//1- Codificamos SQL recibido en Base64
 SetPointer(HourGlass!)
 ls_encodedSQL = of_encode(as_sql)
 	
+//2- Preparamos Json con SQL y Argumentos del Datastore	
 li_new = 1
 ls_argnames[li_new]="sqlEncoded"
 ls_argdatatypes[li_new]="string"
@@ -324,12 +326,12 @@ lnv_JsonGenerator = Create n_JsonGenerator
 ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], l_values[])
 Destroy lnv_JsonGenerator
 	
-	
+//3- Preparamos URL y hacemos llamaa a la Api	
 ls_ApiVerb = "POST"
 ls_url =  gn_api.of_get_url(is_Controller, "Cargar")
 gn_api.of_Post(ls_url, ls_Json, ref ls_jsonReceived)
 
-//Obtenemos el Esquema del Json
+//4- Obtenemos la definición de las columnas del Json recibido
 ll_columnas = of_get_json_schema(ls_jsonReceived, ref ls_columns[], ref ls_types[], ref ls_lens[])
 
 If ll_Columnas = 0 Then
@@ -337,6 +339,7 @@ If ll_Columnas = 0 Then
 	Return -1
 End IF
 
+//5- Generamos la Sintaxis del Datastore
 ls_DwSyntax = of_create_syntax(ls_columns[], ls_types[], ls_lens[])
 
 If ls_DwSyntax = "" Then
@@ -344,7 +347,7 @@ If ls_DwSyntax = "" Then
 	Return -1
 End IF
 
-// Asigna la sintaxis al DataWindow
+//6- Creamos el Objeto a partir de la Sintaxis
 li_rtn =This.Create(ls_dwSyntax)
 
 If li_rtn <> 1 Then
@@ -352,6 +355,7 @@ If li_rtn <> 1 Then
 	Return -1
 End IF
 
+//7- Importamos el Json recibido
 ll_RowCount = THIS.ImportJson(ls_jsonReceived)
 		
 IF ll_RowCount < 0 THEN

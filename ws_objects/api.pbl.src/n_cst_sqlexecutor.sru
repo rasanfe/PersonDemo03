@@ -82,23 +82,19 @@ RETURN lb_result
 end function
 
 private function any of_execute (string as_method, string as_sql, ref any a_values[]);String ls_SQL,  ls_encodedSQL, ls_url, ls_json, ls_response, ls_ApiVerb
-Integer li_rtn
-Any a_result
-Integer li_args, li_new, li_arg
+Integer li_rtn, li_args, li_new, li_arg
 n_JsonGenerator lnv_JsonGenerator
 String ls_argnames[], ls_argdatatypes[]
 Any l_values[], l_null[]
-Long ll_new_id
-String ls_jsoncursor
+Any a_result
 
 li_args=UpperBound(a_values[])
 
+//1- Retocamos SQL recibido y lo Codificamos
 ls_SQL = this.of_GetSql(as_sql)
-
-//Entorno Cloud
-
 ls_encodedSQL = this.of_encode(ls_SQL)
 
+//2- Preparamos JSOn con el SQL y los Argumentos.
 li_new = 1
 ls_argnames[li_new]="sqlEncoded"
 ls_argdatatypes[li_new]="string"
@@ -115,6 +111,7 @@ lnv_JsonGenerator = Create n_JsonGenerator
 ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], l_values[])
 Destroy lnv_JsonGenerator
 
+//3- En función del Método recibido haremos la llamada a la API
 CHOOSE CASE as_method
 	CASE  "Insert"
 		ls_ApiVerb="POST"
@@ -149,7 +146,7 @@ CHOOSE CASE as_method
 END CHOOSE
 	
 IF li_rtn < 0 THEN
-		SetNull(a_result)
+	SetNull(a_result)
 	gf_mensaje(ls_ApiVerb + " Request Error "+string(li_rtn), gn_api.of_get_error_text())
 END IF
 

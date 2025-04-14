@@ -743,9 +743,7 @@ string facename = "Tahoma"
 string text = "Update"
 end type
 
-event clicked;Any l_values[]
-
-If Messagebox("Atencion!","¿Desea Actualizar la Base de Datos?", Exclamation!, OkCancel!)=2 Then Return
+event clicked;If Messagebox("Atencion!","¿Desea Actualizar la Base de Datos?", Exclamation!, OkCancel!)=2 Then Return
 
 If dw_1.of_Update() = 1 Then 
 	wf_retrieve_lista()

@@ -178,15 +178,12 @@ End If
 end subroutine
 
 public function long of_retrieve (any a_values[]);Long ll_RowCount
-String ls_url, ls_ApiVerb, ls_DwProcessing
+String ls_url, ls_ApiVerb, ls_DwProcessing, ls_Json, ls_jsonReceived, ls_DataObject, ls_Syntax, ls_encodedSyntax
 Any la_Array[]
-String ls_Json, ls_jsonReceived
 n_JsonGenerator lnv_JsonGenerator
-String ls_Syntax, ls_encodedSyntax
 String ls_argnames[], ls_argdatatypes[]
 Any l_values[], l_null[]
 Integer li_value, li_TotalValues, li_result, li_new
-String ls_DataObject
 
 SetRedraw(False)
 Reset()
@@ -200,17 +197,21 @@ END IF
 
 li_TotalValues=UpperBound(a_values[])
 
+//1- Obtener la Sintaxi <<This.Describe("Datawindow.Syntax")>>
 ls_Syntax = this.of_Get_Syntax()
 
 If ls_Syntax = "" then return -1
 
+//2- Codificar en Base64
 ls_encodedSyntax = of_encode(ls_Syntax)
-		
+	
+//3- Preparamos Primer Elemento del Json con la Syntaxi		
 li_new = 1
 ls_argnames[li_new]="sqlEncoded"
 ls_argdatatypes[li_new]="string"
 l_values[li_new]=ls_encodedSyntax
 	
+//4- Obetnermos los Argumentos del Datawindow	
 li_result= of_getarguments (ref is_dwargnames[], ref is_dwargdatatypes[])
 	
 IF li_result > li_TotalValues THEN
@@ -218,16 +219,16 @@ IF li_result > li_TotalValues THEN
 	RETURN -1
 END IF	
 	
-//Imitando el fucnionamiento de los DataStore
-//Si le paso mas argumentos de los admitidos ignoro los que sobran.
-//Esto es util por si a los reports les añades argumentos
+//5 - Si recibo mas argumentos de los admitidos ignoro los que sobran.
 IF li_result < li_TotalValues THEN
 	li_TotalValues = li_result	
 END IF	
 	
+//6- Detectamos si el Datawindow es Composite para no Hacer el Retieve directamente.	
 ls_DwProcessing = This.Describe("Datawindow.Processing")
 
 IF ls_DwProcessing <> "5" THEN
+	 // 7- Preparamos con los Argumentos los siguientes elementos del Json  
 	FOR li_value = 1 to li_TotalValues
 		li_new ++
 		ls_argnames[li_new]=is_dwargnames[li_value]
@@ -235,27 +236,33 @@ IF ls_DwProcessing <> "5" THEN
 		l_values[li_new]=a_values[li_value]
 	NEXT	
 	
+	// 8- Creamos el Json
 	lnv_JsonGenerator = Create n_JsonGenerator
 	ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], l_values[])
 	Destroy lnv_JsonGenerator
 	
+	//9- Preparamos la URL 
 	ls_ApiVerb = "POST"
 	ls_url =  gn_api.of_get_url(is_Controller, "Retrieve")
 	
+	//10- Hacemos llamada POST
 	gn_api.of_Post(ls_url, ls_Json, ref ls_jsonReceived)
+	
+	//11- Importamos Json Recibido
 	ll_RowCount = ImportJson(ls_jsonReceived)
 ELSE
-	ll_RowCount = InsertRow(0) //Para Los dw Composite Inserto una Fila
+	//Para Los dw Composite Inserto una Fila
+	ll_RowCount = InsertRow(0) 
 END IF
 
 IF ll_RowCount < 0 THEN
 	gf_mensaje(ls_ApiVerb + " Request Error "+string(ll_RowCount), gn_api.of_get_error_text())
 END IF
 
-
-//Recargo los Retrieval Argument por si se usan en funciones o otras cosas.
+//12- Recargo los Retrieval Argument por si se usan en funciones o otras cosas.
 of_setarguments(is_dwargnames[], is_dwargdatatypes[], a_values[])
 	
+//13- Actualizamos Banderas y reseteamos variables	
 ResetUpdate()
 ia_values[] = a_values[] //Guardo los valores
 a_values[] = l_null[]
@@ -287,31 +294,31 @@ Return li_Rtn
 end function
 
 public function long of_update ();String ls_encodedSQL, ls_url, ls_ApiVerb
-Long ll_rtn
-String ls_JsonReceived
-String ls_SqlWithParams
-Integer li_Result
+String ls_SqlWithParams, ls_JsonReceived
 String ls_jsonsend, ls_jsonExport, ls_jsonExportEncoded
 n_jsongenerator ln_n_jsongenerator
+Long ll_rtn
 String ls_key[], ls_type[]
 any la_value[]
 
+//Sincroniza Cambios (Insert/Delete/Update) con API
 This.AcceptText()
 
+//1-Exportamos Datos en Json (changedonly, format)
 ls_jsonExport  = This.ExportJson(True, True)
 	
+//2-Obtenemos la Sintaxi (SDR) del Datawindow	
 ls_SqlWithParams =This.describe("Datawindow.syntax")
 
-//Codificamos el Select:
-n_cst_coderobject ln_coder 
-ln_coder =  CREATE n_cst_coderobject
-ls_encodedSQL = ln_coder.of_encode(ls_SqlWithParams)
-ls_jsonExportEncoded  = ln_coder.of_encode(ls_jsonExport)
-Destroy ln_coder
+//3- Codificamos en Base 64
+ls_encodedSQL = of_encode(ls_SqlWithParams)
+ls_jsonExportEncoded  = of_encode(ls_jsonExport)
 
+//4-Preparamos URL
 ls_ApiVerb = "POST"
 ls_url =  gn_api.of_get_url(is_Controller, "Update")
 
+//5- Cremos Json Combiando con Sintaxi y Datos Exportados.
 ln_n_jsongenerator =  Create n_jsongenerator
 
 ls_type[1] = "string"
@@ -324,6 +331,7 @@ la_value[2] = ls_jsonExportEncoded
 
 ls_jsonsend = ln_n_jsongenerator.of_json_object(ls_type, ls_key, la_value)
 
+//6- Hacemos llamada POST
 ll_rtn = gn_api.of_Post(ls_url, ls_jsonSend,ref ls_JsonReceived)
 
 IF ll_rtn < 1 THEN
@@ -335,6 +343,7 @@ ELSE
 	End if
 END IF
 
+//7- Reseteamos Estado Interno del Datawindow
 This.ResetUpdate()
 	
 Return ll_rtn
