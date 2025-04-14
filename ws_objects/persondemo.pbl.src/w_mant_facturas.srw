@@ -35,15 +35,15 @@ end type
 end forward
 
 global type w_mant_facturas from window
-integer width = 7072
-integer height = 2676
+integer width = 7045
+integer height = 2652
 boolean titlebar = true
 string title = "Mantenimiento Facturas"
-boolean resizable = true
+boolean minbox = true
+boolean maxbox = true
 windowstate windowstate = maximized!
 long backcolor = 67108864
 string icon = "AppIcon!"
-boolean center = true
 st_registros st_registros
 st_criterio st_criterio
 sle_busqueda sle_busqueda

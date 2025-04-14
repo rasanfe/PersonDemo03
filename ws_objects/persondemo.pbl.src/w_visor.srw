@@ -11,9 +11,10 @@ integer width = 4101
 integer height = 2572
 boolean titlebar = true
 string title = "Visor de Documentos"
+boolean minbox = true
+boolean maxbox = true
 windowstate windowstate = maximized!
 string icon = "AppIcon!"
-boolean center = true
 wb_1 wb_1
 end type
 global w_visor w_visor
@@ -35,6 +36,7 @@ event open;
 is_fileName = Message.StringParm
 
 If is_fileName <> "" Then
+	This.Title = "Visor - ["+Mid(is_fileName, LastPos(is_fileName, "\") + 1)+"]"
 	wb_1.Navigate(is_fileName)
 End If
 
@@ -47,11 +49,6 @@ end event
 
 event closequery;
 FileDelete(is_fileName)
-end event
-
-event activate;	If This.WindowState <> Maximized! Then
-		This.WindowState = Maximized!
-	End If
 end event
 
 type wb_1 from webbrowser within w_visor

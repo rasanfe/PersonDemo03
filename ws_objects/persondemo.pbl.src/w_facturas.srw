@@ -49,10 +49,11 @@ integer width = 5221
 integer height = 2972
 boolean titlebar = true
 string title = "Listado Facturas"
+boolean minbox = true
+boolean maxbox = true
 windowstate windowstate = maximized!
 long backcolor = 67108864
 string icon = "AppIcon!"
-boolean center = true
 pb_print_composite pb_print_composite
 dw_composite dw_composite
 pb_print_report pb_print_report
@@ -798,7 +799,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-11"), Time("21:44:19.000000"))
+datetime value = DateTime(Date("2025-04-14"), Time("08:26:41.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
@@ -820,7 +821,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-11"), Time("21:44:19.000000"))
+datetime value = DateTime(Date("2025-04-14"), Time("08:26:41.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
