@@ -326,7 +326,7 @@ lnv_JsonGenerator = Create n_JsonGenerator
 ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], l_values[])
 Destroy lnv_JsonGenerator
 	
-//3- Preparamos URL y hacemos llamaa a la Api	
+//3- Preparamos URL y hacemos llamada a la Api	
 ls_ApiVerb = "POST"
 ls_url =  gn_api.of_get_url(is_Controller, "Cargar")
 gn_api.of_Post(ls_url, ls_Json, ref ls_jsonReceived)
