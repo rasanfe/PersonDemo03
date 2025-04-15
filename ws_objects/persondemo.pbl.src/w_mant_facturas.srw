@@ -854,14 +854,29 @@ la_values[4] = ll_numFac
 la_result[] = ln_exec.of_SelectInto(ls_sql, la_values[])
 
 IF  IsNull( la_result[1]) or  la_result[1] = 0 THEN 
-	Return
-Else
-	ll_numAnt = la_result[1]
-	is_factura = string(ll_numAnt)
+	ls_sql = "SELECT isnull("+ls_func+"(convert(int, factura)), 0)  "+&
+				 "FROM venfac "+&
+				 "WHERE empresa = @empresa  "+&		
+				 "AND anyo = @anyo  "+&	
+				  "AND serie = @serie "
+	la_values[]=la_null[]			 
+	la_values[1]=is_empresa
+	la_values[2]=is_anyo
+	la_values[3]=is_serie
+
+	la_result[] = ln_exec.of_SelectInto(ls_sql, la_values[])
+	If  IsNull( la_result[1]) or  la_result[1] = 0 Then Return 
 End If
 
 Destroy ln_exec
 
+ll_numAnt = la_result[1]
+is_factura = string(ll_numAnt)
+
+la_values[]=la_null[]			 
+la_values[1]=is_empresa
+la_values[2]=is_anyo
+la_values[3]=is_serie
 la_values[4]=is_factura
 dw_1.of_retrieve(la_values[])
 end event
