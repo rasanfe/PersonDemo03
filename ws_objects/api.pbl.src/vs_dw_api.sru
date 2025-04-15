@@ -329,7 +329,7 @@ ls_type[2] = "string"
 ls_key[2] = "jsonExport"
 la_value[2] = ls_jsonExportEncoded
 
-ls_jsonsend = ln_n_jsongenerator.of_json_object(ls_type, ls_key, la_value)
+ls_jsonsend = ln_n_jsongenerator.of_set_arguments(ls_key[], ls_type[], la_value[])
 
 //6- Hacemos llamada POST
 ll_rtn = gn_api.of_Post(ls_url, ls_jsonSend,ref ls_JsonReceived)

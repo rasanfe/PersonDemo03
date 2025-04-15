@@ -10,7 +10,6 @@ global n_jsongenerator n_jsongenerator
 
 forward prototypes
 public function string of_set_arguments (string as_argnames[], string as_argdatatypes[], any a_values[])
-public function string of_json_object (string as_type[], string as_key[], any aa_value[])
 end prototypes
 
 public function string of_set_arguments (string as_argnames[], string as_argdatatypes[], any a_values[]);String ls_json
@@ -117,90 +116,6 @@ NEXT
 // Messagebox("ls_Json", ls_Json)
  
  If isnull(ls_Json) or trim(ls_Json) = "" Then
-	gf_mensaje("Error JsonGenerator", "¡Error Generando Json String!")
- End IF
-
- // Retornar el JSON generado
- RETURN ls_Json
-end function
-
-public function string of_json_object (string as_type[], string as_key[], any aa_value[]);Long ll_RootObject, ll_Child
-Integer li_Index
-String ls_Json, ls_Type, ls_key
-Long ll_types, ll_keys, ll_Values
-Any la_value
-
- ll_types = UpperBound(as_type[])
- ll_keys = UpperBound(as_key[])
- ll_Values = UpperBound(aa_value[])
-
-If ll_types <> ll_keys Or ll_types <> ll_Values Or  ll_keys <> ll_Values Then
-	gf_mensaje("Error JsonGenerator", "¡El Numero de Párametros no coincide!")
-	Return ""
-End if	
-
-ll_RootObject = CreateJsonObject()
-
-If ll_RootObject < 0  Then 
-	gf_mensaje("Error JsonGenerator", "¡Error de Inicio Json!")
-	Return ""
-End if	
-		 
-// Iterar a través de las columnas y tipos para construir los objetos JSON
-FOR li_Index = 1 TO ll_keys
-	// Add an Object child item
-	
-    // Obtener los valores del primero Nodo
-	ls_Type = as_type[li_Index]	  
-    ls_key = as_key[li_Index]
-    la_value = aa_Value[li_Index]
-
-    // Determinar LongitudMaxima y TipoDatoDataWindow según el tipo
-
-		CHOOSE CASE  lower(ls_Type)
-			CASE ""
-				ll_Child = AddItemNull (ll_RootObject, ls_key )	
-			CASE "string",  "char"
-					IF NOT isnull(la_value) THEN //--------------------------------------------------RAMON
-						ll_Child = AddItemString(ll_RootObject, ls_key, la_value)
-					ELSE
-						ll_Child = AddItemNull (ll_RootObject, ls_key )
-					END IF
-			CASE "number", "integer","int", "double", "decimal" ,"dec", "longlong", "long", "real"
-					IF NOT isnull(la_value) THEN 
-						ll_Child = AddItemNumber(ll_RootObject, ls_key, la_value)
-					ELSE
-						ll_Child = AddItemNull (ll_RootObject, ls_key )
-					END IF	
-			CASE "datetime"
-					IF NOT isnull(la_value) THEN 
-						ll_Child = AddItemDatetime(ll_RootObject, ls_key, la_value)
-					ELSE
-						ll_Child = AddItemNull (ll_RootObject, ls_key )
-					END IF
-			CASE "date"
-					IF NOT isnull(la_value) THEN 
-						ll_Child = AddItemDate(ll_RootObject, ls_key, la_value)
-					ELSE
-						ll_Child = AddItemNull (ll_RootObject, ls_key )
-					END IF	
-			CASE "time"
-					IF NOT isnull(la_value) THEN 
-						ll_Child = AddItemTime(ll_RootObject, ls_key, la_value)	
-					ELSE
-						ll_Child = AddItemNull (ll_RootObject, ls_key )
-					END IF	
-	     	 CASE ELSE
-				gf_mensaje("Error JsonGenerator", "Tipo de dato desconocido: " + ls_Type)
-				Return ""
-		END CHOOSE	
-NEXT
-  
-
-// Generar el JSON como string
- ls_Json = GetJsonString()
- 
-  If IsNull(ls_Json) Or trim(ls_Json) = "" Then
 	gf_mensaje("Error JsonGenerator", "¡Error Generando Json String!")
  End IF
 
