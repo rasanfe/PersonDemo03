@@ -70,11 +70,12 @@ end prototypes
 type variables
 String is_empresa, is_anyo, is_serie, is_factura
 String is_columna_buscar="razon"
+Constant String ALL = ""
 end variables
 
 forward prototypes
 public function long wf_retrieve_lista ()
-public subroutine wf_retrieve_dddw (u_dw adw)
+public subroutine wf_retrieve_dddw (string as_dddw)
 end prototypes
 
 public function long wf_retrieve_lista ();string ls_empresa, ls_anyo
@@ -104,12 +105,10 @@ st_registros.text="Total registros: "+string(ll_RowCount, "#,###,###,##0")
 Return ll_RowCount
 end function
 
-public subroutine wf_retrieve_dddw (u_dw adw);Long ll_RowCount
+public subroutine wf_retrieve_dddw (string as_dddw);Long ll_RowCount
 String ls_Json1, ls_Json2, ls_Json3
 DataWindowChild dwc_1, dwc_2, dwc_3
-String ls_Argnames1[], ls_Argdatatypes1[], l_values1[]
-String ls_Argnames2[], ls_Argdatatypes2[], l_values2[]
-String ls_Argnames3[], ls_Argdatatypes3[], l_values3[]
+String l_values1[], l_values2[], l_values3[]
 nvo_ds_api ds_1, ds_2,ds_3
 string ls_objname1, ls_objname2, ls_objname3
 Integer li_result
@@ -117,87 +116,86 @@ Integer li_result
 yield()
 SetPointer (Hourglass!)
 
-If adw.RowCount() <> 1 Then return
+If dw_1.RowCount() <> 1 Then return
 
-ls_objname1 ="dddw_genter_razon"
-ds_1= Create nvo_ds_api
-ds_1.DataObject =ls_objname1
+//1- DropDownDatawindow Cliente
+If as_dddw = "" or as_dddw = "cliente" Then
+	ls_objname1 ="dddw_genter_razon"
+	ds_1= Create nvo_ds_api
+	ds_1.DataObject =ls_objname1
+	
+	//Argumentos dddw Cliente
+	l_values1[1] =  dw_1.object.empresa[1]
+	
+	//Datastore Auxiliar Cliente
+	ds_1.of_retrieve(l_values1[])
+	ls_json1 = ds_1.ExportJson()
+	Destroy ds_1
+	
+	li_result =dw_1.GetChild("cliente", dwc_1)
+	
+	If li_Result <> 1 Then
+		gf_mensaje("Error", "¡ Error Tomando Refrencia a DDDW1 !")
+		Return 
+	End IF
+	
+	dwc_1.Reset()
+	ll_RowCount = dwc_1.ImportJson(ls_json1)
+End If
 
-//Retrieve Argument for Nested report 1
-ls_Argnames1[1]="as_empresa"
-ls_Argdatatypes1[1]="string"
-l_values1[1] =  adw.object.empresa[1]
+//2- DropDownDatawindow Obra
+If as_dddw = "" or as_dddw = "obra" Then
+	ls_objname2 ="dddw_venenvio_descripcion"
+	ds_2= Create nvo_ds_api
+	ds_2.DataObject =ls_objname2
+	
+	//Argumentos dddw Obra
+	dw_1.AcceptText()
+	l_values2[1] = dw_1.object.empresa[1]
+	l_values2[2] = dw_1.object.cliente[1]
+	
+	//Datastore Auxiliar Obra
+	ds_2.of_retrieve(l_values2[])
+	ls_json2 = ds_2.ExportJson()
+	Destroy ds_2
+	
+	li_result =dw_1.GetChild("obra", dwc_2)
+	
+	If li_Result <> 1 Then
+		gf_mensaje("Error", "¡ Error Tomando Refrencia a DDDW2 !")
+		Return 
+	End IF
+	
+	dwc_2.Reset()
+	ll_RowCount = dwc_2.ImportJson(ls_json2)
+End If
 
-//Retrieve Nested
-ds_1.of_retrieve(l_values1[])
-ls_json1 = ds_1.ExportJson()
-Destroy ds_1
+//3- DropDownDatawindow Formas de Pago
+If as_dddw = "" or as_dddw = "cod_fp" Then
+	ls_objname3 ="dddw_carforpag_texto1"
+	ds_3= Create nvo_ds_api
+	ds_3.DataObject =ls_objname3
+	
+	//Argumentos dddw Formass de Pago
+	l_values3[1] =  dw_1.object.empresa[1]
+	
+	//Datastore Auxiliar Formas de Pago
+	ds_3.of_retrieve(l_values3[])
+	ls_json3 = ds_3.ExportJson()
+	Destroy ds_3
+	
+	li_result =dw_1.GetChild("cod_fp", dwc_3)
+	
+	If li_Result <> 1 Then
+		gf_mensaje("Error", "¡ Error Tomando Refrencia a DDDW3 !")
+		Return 
+	End IF
+	
+	dwc_3.Reset()
+	ll_RowCount = dwc_3.ImportJson(ls_json3)
+End If
 
-ls_objname2 ="dddw_venenvio_descripcion"
-ds_2= Create nvo_ds_api
-ds_2.DataObject =ls_objname2
-
-//Retrieve Argument for Nested report 2
-ls_Argnames2[1]="as_empresa"
-ls_Argdatatypes2[1]="string"
-l_values2[1] = adw.object.empresa[1]
-
-ls_Argnames2[2]="as_cliente"
-ls_Argdatatypes2[2]="string"
-l_values2[2] = adw.object.cliente[1]
-
-//Retrieve Nested
-ds_2.of_retrieve(l_values2[])
-ls_json2 = ds_2.ExportJson()
-Destroy ds_2
-
-
-ls_objname3 ="dddw_carforpag_texto1"
-ds_3= Create nvo_ds_api
-ds_3.DataObject =ls_objname3
-
-//Retrieve Argument for Nested report 3
-ls_Argnames3[1]="as_empresa"
-ls_Argdatatypes3[1]="string"
-l_values3[1] =  adw.object.empresa[1]
-
-//Retrieve Nested
-ds_3.of_retrieve(l_values3[])
-ls_json3 = ds_3.ExportJson()
-Destroy ds_3
-
-li_result =adw.GetChild("cliente", dwc_1)
-
-If li_Result <> 1 Then
-	gf_mensaje("Error", "¡ Error Tomando Refrencia a DDDW1 !")
-	Return 
-End IF
-
-dwc_1.Reset()
-ll_RowCount = dwc_1.ImportJson(ls_json1)
-
-
-li_result =adw.GetChild("obra", dwc_2)
-
-If li_Result <> 1 Then
-	gf_mensaje("Error", "¡ Error Tomando Refrencia a DDDW2 !")
-	Return 
-End IF
-
-dwc_2.Reset()
-ll_RowCount = dwc_2.ImportJson(ls_json2)
-
-li_result =adw.GetChild("cod_fp", dwc_3)
-
-If li_Result <> 1 Then
-	gf_mensaje("Error", "¡ Error Tomando Refrencia a DDDW3 !")
-	Return 
-End IF
-
-dwc_3.Reset()
-ll_RowCount = dwc_3.ImportJson(ls_json3)
-
-adw.groupcalc()
+dw_1.groupcalc()
 SetPointer (Arrow!)
 
 
@@ -384,21 +382,22 @@ long textcolor = 33554432
 borderstyle borderstyle = stylelowered!
 end type
 
-event ue_keypress;long ll_Row
+event ue_keypress;long ll_Row, ll_RowCount
 string ls_buscar, ls_tipo
 int li_len
 
+ll_RowCount = dw_lista.RowCount()
 ls_tipo = dw_lista.Describe(is_columna_buscar+".coltype")
 ls_buscar = Upper(Text)
 li_len = len(ls_buscar)
 
 Choose Case  mid(ls_tipo,1,4) 
 	Case 'char' 
-		ll_Row = dw_lista.Find("Upper(mid("+is_columna_buscar+",1,"+string(li_len)+")) = '"+ls_buscar+"'", 1, dw_lista.RowCount())
+		ll_Row = dw_lista.Find("Upper(mid("+is_columna_buscar+",1,"+string(li_len)+")) = '"+ls_buscar+"'", 1, ll_RowCount)
 	Case 'deci'	
-		ll_Row = dw_lista.Find("Upper(mid(string("+is_columna_buscar+"),1,"+string(li_len)+")) = '"+ls_buscar+"'", 1, dw_lista.RowCount())
+		ll_Row = dw_lista.Find("Upper(mid(string("+is_columna_buscar+"),1,"+string(li_len)+")) = '"+ls_buscar+"'", 1, ll_RowCount)
 	Case 'long'	
-		ll_Row = dw_lista.Find("Upper(mid(string("+is_columna_buscar+"),1,"+string(li_len)+")) = '"+ls_buscar+"'", 1, dw_lista.RowCount())
+		ll_Row = dw_lista.Find("Upper(mid(string("+is_columna_buscar+"),1,"+string(li_len)+")) = '"+ls_buscar+"'", 1, ll_RowCount)
 End Choose			
 
 If ll_Row > 0 Then
@@ -415,10 +414,11 @@ Else
 End iF
 
 dw_lista.filter()
-	
-st_registros.text="Total registros: "+string(dw_lista.RowCount(), "#,###,###,##0")
+ll_RowCount = dw_lista.RowCount()
 
-If dw_lista.RowCount()=0 Then
+st_registros.text="Total registros: "+string(ll_RowCount, "#,###,###,##0")
+
+If ll_RowCount=0 Then
 	sle_busqueda.TextColor = RGB(255,0,0)
 	st_criterio.TextColor = RGB(255,0,0)
 	sle_busqueda.limit=len(sle_busqueda.text)
@@ -784,7 +784,7 @@ dw_1.object.factura[ll_Row]=is_factura
 //Añado la ultima fecha factura
 dw_1.object.fecha[ll_Row]=gf_fecha_factura(is_empresa, is_anyo, is_serie) 
 
-wf_retrieve_dddw(dw_1) 
+wf_retrieve_dddw(ALL) 
 end event
 
 type dw_1 from vs_dw_api within w_mant_facturas
@@ -804,7 +804,7 @@ Constant Dec{2} ld_iva = 0.21
 
 Choose Case dwo.name
 	Case "cliente"
-		wf_retrieve_dddw(this)
+		wf_retrieve_dddw("obra")
 		this.Object.Obra[1]=""
      Case "subtotal" 
 		ld_totaliva = round(dec(data) * ld_iva, 2)
@@ -814,7 +814,7 @@ Choose Case dwo.name
 End Choose
 end event
 
-event retrieveend;call super::retrieveend;wf_retrieve_dddw(this)
+event retrieveend;call super::retrieveend;wf_retrieve_dddw(ALL)
 end event
 
 event clicked;call super::clicked;n_cst_sqlexecutor ln_exec
