@@ -8,6 +8,7 @@
           <Item Text="Mant Facturas" PictureName="DesignBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_mant_facturas" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
           <Item Text="Listado Facturas" PictureName="OrdersBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_facturas" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
             <Item Text="Sql Asistido" PictureName="ZoomInBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_sqlasistido" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
+            <Item Text="Pruebas" PictureName="RemovePropertiesBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_prueba" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
           <Item Text="Ayuda" PictureName="HelpBig!" Checked="false" Enabled="true" Tag="m_ayuda_master_menu" Type="0" Visible="true" Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected">
             <Item Text="Ventana Actual" PictureName="HelpBig!" Checked="false" Enabled="true" Tag="m_ventanaactual" Type="0" Visible="true" Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
             <Item Text="Acerca de..." PictureName="AboutBig!" Checked="false" Enabled="true" Tag="m_acerca" Type="0" Visible="true" Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
@@ -23,6 +24,7 @@
           <LargeButton Text="Mant Facturas" PictureName="DesignBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Listado Facturas" PowerTipDescription="" Tag="m_mant_facturas" Visible="true" Clicked="ue_LargeButtonClicked"/>
           <LargeButton Text="Listado Facturas" PictureName="OrdersBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Listado Facturas" PowerTipDescription="" Tag="m_facturas" Visible="true" Clicked="ue_LargeButtonClicked"/>
            <LargeButton Text="Sql Asistido" PictureName="ZoomInBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Sql Asistido" PowerTipDescription="" Tag="m_sqlasistido" Visible="true" Clicked="ue_LargeButtonClicked"/>
+           <LargeButton Text="Pruebas" PictureName="RemovePropertiesBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Ventana de Pruebas" PowerTipDescription="" Tag="m_prueba" Visible="true" Clicked="ue_LargeButtonClicked"/>
         </Panel>
       </Category>
       <Category Text="Opciones" Enabled="true" Tag="m_opciones_category" Visible="true">
