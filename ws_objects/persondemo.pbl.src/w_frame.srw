@@ -190,40 +190,43 @@ mdi_1.SetRedraw(FALSE)
 lw_base  = this.getactivesheet( )
 	
 CHOOSE CASE as_menu_name
-		//OPCIONES
-		CASE "m_setupimpresora"
-			PrintSetup()
-		CASE "m_acerca" 
-				open(w_about)
-		CASE "m_ventanaactual"
-			wf_window_location()
-		CASE "m_imprimirpantalla"
-			IF IsValid (lw_base) THEN
-				ll_job = PrintOpen("Captura Pantalla", TRUE)
-				//PrintScreen(ll_Spooler,500,500)
-				PrintScreen(ll_job, 0,0)
-				PrintClose(ll_job)
-			END IF	
+	//OPCIONES
+	CASE "m_setupimpresora"
+		PrintSetup()
+	CASE "m_acerca" 
+			open(w_about)
+	CASE "m_ventanaactual"
+		wf_window_location()
+	CASE "m_imprimirpantalla"
+		IF IsValid (lw_base) THEN
+			ll_job = PrintOpen("Captura Pantalla", TRUE)
+			//PrintScreen(ll_Spooler,500,500)
+			PrintScreen(ll_job, 0,0)
+			PrintClose(ll_job)
+		END IF	
 		//UTILIDADES
-		CASE "m_mapadecaracteres"	
-			run("charmap")
-		CASE "m_notepad"	
-			run("notepad")
-		CASE "m_calculadora"	
-			run("calc")
-		CASE "m_bloquear"	
-			LockWorkStation()
-		CASE "m_setup"	
-			Open(w_setup)	
-		CASE "m_mant_facturas"
-			str_venfac lstr_venfac
-			OpenSheetWithParm(w_mant_facturas, lstr_venfac, this, 0, Layered!)
-		CASE "m_facturas"
-			OpenSheet(w_facturas, this, 0, Layered!)
-		CASE "m_sqlasistido"
-			OpenSheet(w_con_sql, this, 0, Layered!)
-		CASE "m_prueba"
-			OpenSheet(w_prueba, this, 0, Layered!)
+	CASE "m_mapadecaracteres"	
+		run("charmap")
+	CASE "m_notepad"	
+		run("notepad")
+	CASE "m_calculadora"	
+		run("calc")
+	CASE "m_bloquear"	
+		LockWorkStation()
+	CASE "m_setup"	
+		Open(w_setup)	
+	CASE "m_mant_facturas"
+		str_venfac lstr_venfac
+		OpenSheetWithParm(w_mant_facturas, lstr_venfac, this, 0, Layered!)
+	CASE "m_facturas"
+		OpenSheet(w_facturas, this, 0, Layered!)
+	CASE "m_sqlasistido"
+		OpenSheet(w_con_sql, this, 0, Layered!)
+	CASE "m_prueba"
+		OpenSheet(w_prueba, this, 0, Layered!)
+	CASE "m_salir"
+		Close(this)
+		Return
 END CHOOSE
 
 mdi_1.SetRedraw(TRUE)
