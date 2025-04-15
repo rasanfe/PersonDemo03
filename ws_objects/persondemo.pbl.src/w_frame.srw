@@ -5,9 +5,9 @@ global type w_frame from window
 end type
 type mdi_1 from mdiclient within w_frame
 end type
-type mditbb_1 from tabbedbar within w_frame
-end type
 type mdirbb_1 from ribbonbar within w_frame
+end type
+type mditbb_1 from tabbedbar within w_frame
 end type
 type rbb_main from n_rbb within w_frame
 end type
@@ -35,8 +35,8 @@ event ue_rbm_smallbuttonclicked ( long itemhandle )
 event ue_rbm_tabbuttonclicked ( long itemhandle )
 event ue_rbm_menuitemclicked ( long itemhandle,  long index,  long subindex )
 mdi_1 mdi_1
-mditbb_1 mditbb_1
 mdirbb_1 mdirbb_1
+mditbb_1 mditbb_1
 rbb_main rbb_main
 end type
 global w_frame w_frame
@@ -222,6 +222,8 @@ CHOOSE CASE as_menu_name
 			OpenSheet(w_facturas, this, 0, Layered!)
 		CASE "m_sqlasistido"
 			OpenSheet(w_con_sql, this, 0, Layered!)
+		CASE "m_prueba"
+			OpenSheet(w_prueba, this, 0, Layered!)
 END CHOOSE
 
 mdi_1.SetRedraw(TRUE)
@@ -262,8 +264,8 @@ end on
 on w_frame.destroy
 if IsValid(MenuID) then destroy(MenuID)
 destroy(this.mdi_1)
-destroy(this.mditbb_1)
 destroy(this.mdirbb_1)
+destroy(this.mditbb_1)
 destroy(this.rbb_main)
 end on
 
@@ -302,15 +304,18 @@ end event
 type mdi_1 from mdiclient within w_frame
 end type
 
+type mdirbb_1 from ribbonbar within w_frame
+int X=0
+int Y=0
+int Width=0
+int Height=596
+end type
+
 type mditbb_1 from tabbedbar within w_frame
 int X=0
 int Y=0
 int Width=0
 int Height=104
-end type
-
-type mdirbb_1 from ribbonbar within w_frame
-integer height = 596
 end type
 
 type rbb_main from n_rbb within w_frame

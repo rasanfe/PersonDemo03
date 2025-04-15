@@ -16,6 +16,7 @@ PBD:topwiz.pbl,,1
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,gf_mensaje,f
 OBJ:C:\AppeonSpain25\PersonDemo\api.pbl,gf_replaceall,f
 OBJ:C:\AppeonSpain25\PersonDemo\topwiz.pbl,os_filedatetime,s
+OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,dw_prueba,d
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,dw_mant_lista,d
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,u_ds,u
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,n_rbb,u
@@ -42,6 +43,7 @@ OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,report_composite,d
 OBJ:C:\AppeonSpain25\PersonDemo\api.pbl,gf_parsetoarray,f
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,w_facturas,w
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,report_con_listado_con_cabecera,d
+OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,w_prueba,w
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,str_venfac,s
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,w_login,w
 OBJ:C:\AppeonSpain25\PersonDemo\persondemo.pbl,w_con_sql,w
