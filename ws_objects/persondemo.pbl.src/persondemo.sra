@@ -21,7 +21,7 @@ end variables
 global type persondemo from application
 string appname = "persondemo"
 boolean freedblibraries = true
-integer highdpimode = 0
+
 string themepath = "theme"
 string themename = "Do Not Use Themes"
 boolean nativepdfvalid = true
