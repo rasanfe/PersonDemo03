@@ -446,12 +446,12 @@ end type
 
 event doubleclicked;call super::doubleclicked;Any la_values[]
 
-If row < 1 then return
+If row < 1 Then Return
 
-is_empresa=this.object.empresa[row]
-is_anyo=this.object.venfac_anyo[row]
-is_serie=this.object.serie[row]
-is_factura=this.object.factura[row]
+is_empresa=This.object.empresa[row]
+is_anyo=This.object.venfac_anyo[row]
+is_serie=This.object.serie[row]
+is_factura=This.object.factura[row]
 
 la_values[1]=is_empresa
 la_values[2]=is_anyo
