@@ -322,19 +322,21 @@ ls_jsonsend = lnv_JsonGenerator.of_set_arguments(ls_key[], ls_type[], la_value[]
 //6- Hacemos llamada POST
 ll_rtn = gn_api.of_Post(ls_url, ls_jsonSend,ref ls_JsonReceived)
 
-IF ll_rtn < 1 THEN
+If ll_rtn < 1 Then
 	gf_mensaje(ls_ApiVerb+" Request Error", gn_api.of_get_error_text())
-ELSE
+Else
 	ll_rtn = long(ls_JsonReceived)
 	If ll_rtn < 0 Then
 		gf_mensaje("Datawindow Update", "Error al Actualizar Datawindow")
 	End if
-END IF
+End If
 
 //7- Reseteamos Estado Interno del Datawindow
 This.ResetUpdate()
 	
 Return ll_rtn
+
+
 
 end function
 
