@@ -54,6 +54,10 @@ FUNCTION long FindFirstFile ( string filename, ref os_finddata findfiledata) LIB
 FUNCTION	uLong	GetModuleFileName ( uLong lhModule, ref string sFileName, ulong nSize )  LIBRARY "Kernel32.dll" ALIAS FOR "GetModuleFileNameW"
 end prototypes
 
+type variables
+//coment
+end variables
+
 on persondemo.create
 appname="persondemo"
 message=create message
