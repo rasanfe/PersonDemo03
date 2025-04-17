@@ -113,7 +113,7 @@ end subroutine
 public subroutine wf_reset ();If dw_new.DataObject<> "dw_new" Then
 	dw_new.DataObject="dw_new"
 	dw_new.TriggerEvent(Constructor!)
-	st_registros.text=string(0, "#,###,###,##0")+" Rows"
+	st_registros.text=string(0, "#,###,###,##0")+" Registros"
 End If
 end subroutine
 
@@ -175,7 +175,7 @@ wf_reset()
 end event
 
 event resize;dw_new.Width = newwidth - 50
-dw_new.Height = newheight - 850
+dw_new.Height = newheight - 960
 st_registros.Width = newwidth - 50
 st_registros.y = dw_new.Height + dw_new.y + 10
 
@@ -328,7 +328,7 @@ ls_sql_syntax = mle_1.text
 
 ll_RowCount = dw_new.of_cargar(ls_sql_syntax)
 
-st_registros.text=string(ll_RowCount, "#,###,###,##0")+" Rows"
+st_registros.text=string(ll_RowCount, "#,###,###,##0")+" Registros"
 
 
 end event
@@ -388,7 +388,7 @@ integer textsize = -9
 integer weight = 700
 long textcolor = 8388608
 long backcolor = 74481808
-string text = "Rows"
+string text = "Registros"
 alignment alignment = center!
 boolean border = true
 long bordercolor = 16777215

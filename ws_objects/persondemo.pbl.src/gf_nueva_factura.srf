@@ -8,27 +8,27 @@ end prototypes
 
 global function string gf_nueva_factura (string as_empresa, string as_anyo, string as_serie);n_cst_sqlexecutor ln_exec
 String ls_sql
-Any l_values[]
+Any la_values[]
 any la_result[]
 String ls_nueva_factura
 
-If isnull(as_empresa) or trim(as_empresa) = "" then Return ""
-If isnull(as_anyo) or trim(as_anyo) = "" then Return ""
-If isnull(as_serie) or trim(as_serie) = "" then Return ""
+If IsNull(as_empresa) Or Trim(as_empresa) = "" Then Return ""
+If IsNull(as_anyo) Or Trim(as_anyo) = "" Then Return ""
+If IsNull(as_serie) Or Trim(as_serie) = "" Then Return ""
 
 ln_exec = Create n_cst_sqlexecutor
 	
-ls_sql = "SELECT max(convert(int, factura)) + 1 "+&
-			 "FROM venfac "+&
-			 "WHERE empresa = @empresa  "+&		
-			 "AND anyo = @anyo  "+&	
-			  "AND serie = @serie "	
+ls_sql = "Select max(convert(int, factura)) + 1 "+&
+				 "From venfac "+&
+				 "Where empresa = @empresa  "+&		
+				 "And anyo = @anyo  "+&	
+				 "And serie = @serie "	
 			 
-l_values[1] = as_empresa
-l_values[2] = as_anyo
-l_values[3] = as_serie
+la_values[1] = as_empresa
+la_values[2] = as_anyo
+la_values[3] = as_serie
 
-la_result[] = ln_exec.of_SelectInto(ls_sql, l_values[])
+la_result[] = ln_exec.of_SelectInto(ls_sql, la_values[])
 
 ls_nueva_factura = string(la_result[1])
 Destroy ln_exec

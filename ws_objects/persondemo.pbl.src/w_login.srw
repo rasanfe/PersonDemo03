@@ -121,7 +121,7 @@ Return ls_decrypted
 end function
 
 public function boolean wf_login (string as_usuario, string as_password);String ls_sql
-Any l_values[], l_result[]
+Any la_values[], l_result[]
 Long ll_cuantos
 n_cst_sqlexecutor ln_cst_sqlexecutor
 Boolean lb_login
@@ -132,10 +132,10 @@ ls_sql = "SELECT Count(*)  "+&
 			 "FROM usuarios "+&
 			 "WHERE v_usuario = @usuario and v_password = @clave "		
 			 
-l_values[1] = as_usuario
-l_values[2] = as_password
+la_values[1] = as_usuario
+la_values[2] = as_password
 
-l_result[] = ln_cst_sqlexecutor.of_SelectInto(ls_sql, l_values[] )
+l_result[] = ln_cst_sqlexecutor.of_SelectInto(ls_sql, la_values[] )
 
 If  IsNull(l_result[]) Then
 		SetNull(lb_login)

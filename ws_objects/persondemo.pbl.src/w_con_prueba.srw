@@ -1,14 +1,14 @@
-﻿$PBExportHeader$w_prueba.srw
+﻿$PBExportHeader$w_con_prueba.srw
 forward
-global type w_prueba from window
+global type w_con_prueba from window
 end type
-type cb_consultar from commandbutton within w_prueba
+type cb_consultar from commandbutton within w_con_prueba
 end type
-type dw_1 from vs_dw_api within w_prueba
+type dw_1 from vs_dw_api within w_con_prueba
 end type
 end forward
 
-global type w_prueba from window
+global type w_con_prueba from window
 integer width = 5221
 integer height = 2972
 boolean titlebar = true
@@ -21,21 +21,21 @@ string icon = "AppIcon!"
 cb_consultar cb_consultar
 dw_1 dw_1
 end type
-global w_prueba w_prueba
+global w_con_prueba w_con_prueba
 
 type prototypes
 //Funcion para tomar el directorio de la aplicacion  -64Bits 
 FUNCTION	uLong	GetModuleFileName ( uLong lhModule, ref string sFileName, ulong nSize )  LIBRARY "Kernel32.dll" ALIAS FOR "GetModuleFileNameW"
 end prototypes
 
-on w_prueba.create
+on w_con_prueba.create
 this.cb_consultar=create cb_consultar
 this.dw_1=create dw_1
 this.Control[]={this.cb_consultar,&
 this.dw_1}
 end on
 
-on w_prueba.destroy
+on w_con_prueba.destroy
 destroy(this.cb_consultar)
 destroy(this.dw_1)
 end on
@@ -49,7 +49,7 @@ dw_1.Height = Height -  560
 
 end event
 
-type cb_consultar from commandbutton within w_prueba
+type cb_consultar from commandbutton within w_con_prueba
 integer x = 101
 integer y = 192
 integer width = 585
@@ -72,7 +72,7 @@ la_values[2]="2025"
 dw_1.of_retrieve(la_values)
 end event
 
-type dw_1 from vs_dw_api within w_prueba
+type dw_1 from vs_dw_api within w_con_prueba
 integer x = 50
 integer y = 340
 integer width = 5115

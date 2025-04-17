@@ -20,7 +20,7 @@ end variables
 forward prototypes
 public function integer of_getarguments (ref string as_argnames[], ref string as_argdatatypes[])
 public subroutine of_setarguments (string as_argnames[], string as_argdatatypes[], any aa_argvalues[])
-public function long of_retrieve (any a_values[])
+public function long of_retrieve (any aa_values[])
 public function string of_encode (string as_source)
 public function integer of_deleterow (long al_row)
 public function long of_update ()
@@ -28,16 +28,11 @@ private function string of_get_syntax ()
 public function long of_cargar (string as_sql)
 end prototypes
 
-public function integer of_getarguments (ref string as_argnames[], ref string as_argdatatypes[]);string       ls_dwargs, ls_dwargswithtype[], ls_args[], ls_types[]
-long         ll_a, ll_args, ll_pos, ll_index
-
-// Comprobamos Si hay Asignado un Datawindow
-//if IsNull(this.dataobject) or this.dataobject="" then
-//   return -1
-//end if
+public function integer of_getarguments (ref string as_argnames[], ref string as_argdatatypes[]);String       ls_dwargs, ls_dwargswithtype[], ls_args[], ls_types[]
+Long         ll_a, ll_args, ll_pos, ll_index
 
 // Obtenemos el string con los argumentos del dw o ds.
-ls_dwargs = this.DYNAMIC Describe ( "DataWindow.Table.Arguments" ) 
+ls_dwargs = This.Dynamic Describe ( "DataWindow.Table.Arguments" ) 
 
 // Separamos los argumentos utilizando la un array y obtenemos el número total.
 ll_args = gf_ParseToArray ( ls_dwargs, "~n", ls_dwargswithtype ) 
@@ -50,27 +45,21 @@ For ll_a = 1 to ll_args
       ll_index = UpperBound(as_argnames) + 1
       as_argNames[ll_index]      = Left ( ls_dwargswithtype[ll_a], ll_pos - 1 ) 
       as_argDataTypes[ll_index] = Mid ( ls_dwargswithtype[ll_a], ll_pos + 1 ) 
-      // Cargamos el valor correspondiente. Si es de tipo array ponemos cadena vacía.
-			//If right(as_argDataTypes[ll_index], 4) = 'list' Then
-			//	as_argValues[ll_index] = ''
-			//Else
-				//as_argValues[ll_index] =this.DYNAMIC Describe("evaluate('" + as_argNames[UpperBound(as_argnames)] + "',1)") 
-			//End If
 	End If
 Next
 
 Return UpperBound(as_argNames)
 end function
 
-public subroutine of_setarguments (string as_argnames[], string as_argdatatypes[], any aa_argvalues[]);string      ls_object, ls_objects, ls_type, ls_expression
-string      ls_value, ls_aux
-integer     li_len, li_to, li_from, li_x, li_pos
+public subroutine of_setarguments (string as_argnames[], string as_argdatatypes[], any aa_argvalues[]);String      ls_object, ls_objects, ls_type, ls_expression
+String      ls_value, ls_aux
+Integer     li_len, li_to, li_from, li_x, li_pos
 
 // Obtenemos la colección de objetos de ds.
-ls_objects = this.describe('datawindow.objects')
+ls_objects = This.Describe('datawindow.objects')
 
 // Recorremos los todos objetos.
-li_len = len(ls_objects)
+li_len = Len(ls_objects)
 
 If li_len > 0 Then
    // Inicializamos la variable necesaria desde la que buscamos el siguiente objeto.
@@ -78,41 +67,41 @@ If li_len > 0 Then
    
    // Recorremos todos los objetos.
    Do
-      li_to = pos(ls_objects, "~t", li_from)
+      li_to = Pos(ls_objects, "~t", li_from)
       
       // Obtenemos el nombre del objeto.
       If li_to = 0 Then
-         ls_object = mid(ls_objects, li_from)
+         ls_object = Mid(ls_objects, li_from)
       Else
-         ls_object = mid(ls_objects, li_from, li_to - li_from)
+         ls_object = Mid(ls_objects, li_from, li_to - li_from)
       End If
       
-      If len(ls_object) > 0 Then
+      If Len(ls_object) > 0 Then
          // Obtenemos el tipo del objeto.
-         ls_type = this.describe(ls_object + '.type')
+         ls_type = This.Describe(ls_object + '.type')
          
          // Solo si es computado comprobamos si su expresión contiene "retrieval arguments".
          If ls_type = "compute" Then
-            ls_expression = this.describe(ls_object + '.expression')
+            ls_expression = This.Describe(ls_object + '.expression')
             
             // Para cada objeto miramos todos los "retrieval arguments".
-            For li_x = 1 To upperBound(as_argNames)      
+            For li_x = 1 To UpperBound(as_argNames)      
                // Solo tratamos argumentos que no sean array.
-               If right(as_argDataTypes[li_x], 4) = 'list' Then
+               If Right(as_argDataTypes[li_x], 4) = 'list' Then
                   Continue
                Else
-                  li_pos = pos(ls_expression, as_argNames[li_x])
+                  li_pos = Pos(ls_expression, as_argNames[li_x])
    
                   Do While li_pos > 0 
                      // Comprobamos que no sea otro identificador distinto, para lo que
                      // el carácter que lo precede y el que le sigue debe ser distinto
                      // de letra o número. (si buscamos 'numeropi' que no tome 'numeropista')                  
-                     If ((li_pos = 1) Or match(mid(ls_expression, li_pos -1, 1), '[^A-Z^a-z^0-9]')) And &
-                        ((li_pos + len(as_argNames[li_x]) - 1 = len(ls_expression)) Or match(mid(ls_expression, li_pos + len(as_argNames[li_x]), 1), '[^A-Z^a-z^0-9]')) Then
+                     If ((li_pos = 1) Or Match(Mid(ls_expression, li_pos -1, 1), '[^A-Z^a-z^0-9]')) And &
+                        ((li_pos + Len(as_argNames[li_x]) - 1 = Len(ls_expression)) Or Match(Mid(ls_expression, li_pos + Len(as_argNames[li_x]), 1), '[^A-Z^a-z^0-9]')) Then
    
                      
 					// Hay que tratar los argumentos Nulos.
-					IF isnull(aa_argValues[li_x]) THEN
+					If IsNull(aa_argValues[li_x]) Then
 						Choose Case as_argDataTypes[li_x]
 							Case 'number'
 								 ls_value ="0"
@@ -127,9 +116,9 @@ If li_len > 0 Then
 							Case Else
 									// En un computado no podría aparecer otro tipo.
 							End Choose	
-					ELSE	
+					Else
 						   ls_value = string(aa_argValues[li_x])
-					END IF			
+					End If			
 					                        
                         // Obtenemos la nueva expresión para el computado en base al tipo de dato.
                         Choose Case as_argDataTypes[li_x]
@@ -147,26 +136,26 @@ If li_len > 0 Then
                               // En un computado no podría aparecer otro tipo.
                         End Choose
                         
-                        ls_expression = replace(ls_expression, li_pos, len(as_argNames[li_x]), ls_aux)
+                        ls_expression = Replace(ls_expression, li_pos, Len(as_argNames[li_x]), ls_aux)
                      End If
                         
                      // Buscamos si la misma ocurrencia aparece otra vez.
-                     li_pos = pos(ls_expression, as_argNames[li_x])
+                     li_pos = Pos(ls_expression, as_argNames[li_x])
                   Loop
                End If
             Next
             
             // Si se modifico la expresión para el compute la sustituimos con la nueva.
-            If ls_expression <> this.describe(ls_object + '.expression') Then
+            If ls_expression <> This.Describe(ls_object + '.expression') Then
 
                // Antes de hacer el modify, hay que añadir delante de las comillas dobles la virgulilla.
-               li_pos = pos(ls_expression, '"')
-               do while li_pos > 0
-                  ls_expression = replace(ls_expression, li_pos, 0, "~~")
-                  li_pos = pos(ls_expression, '"', li_pos + 2)
+               li_pos = Pos(ls_expression, '"')
+               Do While li_pos > 0
+                  ls_expression = Replace(ls_expression, li_pos, 0, "~~")
+                  li_pos = Pos(ls_expression, '"', li_pos + 2)
                Loop
                
-               ls_aux = this.Modify(ls_object + ".expression=~"" + ls_expression + "~"")
+               ls_aux = This.Modify(ls_object + ".expression=~"" + ls_expression + "~"")
                
             End If
          End If
@@ -177,30 +166,30 @@ If li_len > 0 Then
 End If
 end subroutine
 
-public function long of_retrieve (any a_values[]);Long ll_RowCount
+public function long of_retrieve (any aa_values[]);Long ll_RowCount
 String ls_url, ls_ApiVerb, ls_DwProcessing, ls_Json, ls_jsonReceived, ls_DataObject, ls_Syntax, ls_encodedSyntax
 Any la_Array[]
 n_JsonGenerator lnv_JsonGenerator
 String ls_argnames[], ls_argdatatypes[]
-Any l_values[], l_null[]
+Any la_values[], la_Null[]
 Integer li_value, li_TotalValues, li_result, li_new
 
-SetRedraw(False)
-Reset()
+This.SetRedraw(False)
+This.Reset()
 
 ls_DataObject = This.DataObject
 
-IF ls_DataObject = "" THEN
+If ls_DataObject = "" Then
 	gf_mensaje("Datawindow Api Error", "¡ No hay DataObject asignado al Datawindow !")
-	RETURN -1
-END IF	
+	Return -1
+End If	
 
-li_TotalValues=UpperBound(a_values[])
+li_TotalValues=UpperBound(aa_values[])
 
 //1- Obtener la Sintaxi <<This.Describe("Datawindow.Syntax")>>
-ls_Syntax = this.of_Get_Syntax()
+ls_Syntax = of_Get_Syntax()
 
-If ls_Syntax = "" then return -1
+If ls_Syntax = "" then Return -1
 
 //2- Codificar en Base64
 ls_encodedSyntax = of_encode(ls_Syntax)
@@ -209,36 +198,36 @@ ls_encodedSyntax = of_encode(ls_Syntax)
 li_new = 1
 ls_argnames[li_new]="sqlEncoded"
 ls_argdatatypes[li_new]="string"
-l_values[li_new]=ls_encodedSyntax
+la_values[li_new]=ls_encodedSyntax
 	
 //4- Obetnermos los Argumentos del Datawindow	
 li_result= of_getarguments (ref is_dwargnames[], ref is_dwargdatatypes[])
 	
-IF li_result > li_TotalValues THEN
+If li_result > li_TotalValues Then
 	gf_mensaje("Json Error", "Expecting "+string(li_result)+" retrieval arguments but got "+string(li_TotalValues)+".")
-	RETURN -1
-END IF	
+	Return -1
+End If
 	
 //5 - Si recibo mas argumentos de los admitidos ignoro los que sobran.
-IF li_result < li_TotalValues THEN
+If li_result < li_TotalValues Then
 	li_TotalValues = li_result	
-END IF	
+End If
 	
 //6- Detectamos si el Datawindow es Composite para no Hacer el Retieve directamente.	
 ls_DwProcessing = This.Describe("Datawindow.Processing")
 
-IF ls_DwProcessing <> "5" THEN
+If ls_DwProcessing <> "5" Then
 	 // 7- Preparamos con los Argumentos los siguientes elementos del Json  
-	FOR li_value = 1 to li_TotalValues
+	For li_value = 1 To li_TotalValues
 		li_new ++
 		ls_argnames[li_new]=is_dwargnames[li_value]
 		ls_argdatatypes[li_new]=is_dwargdatatypes[li_value]
-		l_values[li_new]=a_values[li_value]
-	NEXT	
+		la_values[li_new]=aa_values[li_value]
+	Next
 	
 	// 8- Creamos el Json
 	lnv_JsonGenerator = Create n_JsonGenerator
-	ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], l_values[])
+	ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], la_values[])
 	Destroy lnv_JsonGenerator
 	
 	//9- Preparamos la URL 
@@ -250,40 +239,39 @@ IF ls_DwProcessing <> "5" THEN
 	
 	//11- Importamos Json Recibido
 	ll_RowCount = ImportJson(ls_jsonReceived)
-ELSE
+Else
 	//Para Los dw Composite Inserto una Fila
 	ll_RowCount = InsertRow(0) 
-END IF
+End If
 
-IF ll_RowCount < 0 THEN
+If ll_RowCount < 0 Then
 	gf_mensaje(ls_ApiVerb + " Request Error "+string(ll_RowCount), gn_api.of_get_error_text())
-END IF
-
+End If
 //12- Recargo los Retrieval Argument por si se usan en funciones o otras cosas.
-of_setarguments(is_dwargnames[], is_dwargdatatypes[], a_values[])
+of_setarguments(is_dwargnames[], is_dwargdatatypes[], aa_values[])
 	
 //13- Actualizamos Banderas y reseteamos variables	
 ResetUpdate()
-ia_values[] = a_values[] //Guardo los valores
-a_values[] = l_null[]
-is_dwargnames[] = l_null[]
-is_dwargdatatypes[] = l_null[]
+ia_values[] = aa_values[] //Guardo los valores
+aa_values[] = la_Null[]
+is_dwargnames[] = la_Null[]
+is_dwargdatatypes[] = la_Null[]
 
 This.Event Retrieveend(ll_RowCount)
-SetRedraw(True)
-RETURN ll_RowCount
+This.SetRedraw(True)
+Return ll_RowCount
 end function
 
 public function string of_encode (string as_source);String ls_encoded
-n_cst_coderobject ln_coder 
+n_CoderObject ln_coder 
 
-ln_coder =  CREATE n_cst_coderobject
+ln_coder =  Create n_CoderObject
 
 ls_encoded = ln_coder.of_encode(as_source)
 
 Destroy ln_coder
 
-RETURN ls_encoded
+Return ls_encoded
 end function
 
 public function integer of_deleterow (long al_row);Integer li_Rtn
@@ -296,7 +284,7 @@ end function
 public function long of_update ();String ls_encodedSQL, ls_url, ls_ApiVerb
 String ls_SqlWithParams, ls_JsonReceived
 String ls_jsonsend, ls_jsonExport, ls_jsonExportEncoded
-n_jsongenerator ln_n_jsongenerator
+n_JsonGenerator lnv_JsonGenerator
 Long ll_rtn
 String ls_key[], ls_type[]
 any la_value[]
@@ -319,7 +307,7 @@ ls_ApiVerb = "POST"
 ls_url =  gn_api.of_get_url(is_Controller, "Update")
 
 //5- Cremos Json Combiando con Sintaxi y Datos Exportados.
-ln_n_jsongenerator =  Create n_jsongenerator
+lnv_JsonGenerator =  Create n_JsonGenerator
 
 ls_type[1] = "string"
 ls_key[1] = "sqlEncoded"
@@ -329,7 +317,7 @@ ls_type[2] = "string"
 ls_key[2] = "jsonExport"
 la_value[2] = ls_jsonExportEncoded
 
-ls_jsonsend = ln_n_jsongenerator.of_set_arguments(ls_key[], ls_type[], la_value[])
+ls_jsonsend = lnv_JsonGenerator.of_set_arguments(ls_key[], ls_type[], la_value[])
 
 //6- Hacemos llamada POST
 ll_rtn = gn_api.of_Post(ls_url, ls_jsonSend,ref ls_JsonReceived)
@@ -354,10 +342,9 @@ private function string of_get_syntax ();String ls_dwsyntax, ls_select
 
 If This.DataObject = "" Then Return ""
 
-ls_dwsyntax = This.Describe("DataWindow.Syntax")//This.Object.DataWindow.Syntax
+ls_dwsyntax = This.Describe("DataWindow.Syntax")
 
 //Api Log----------------------------------------------------------------------------------------
-//ls_select = This.Object.DataWindow.Table.Select
 ls_select = This.Describe("DataWindow.Table.Select")
 
 ls_Select =  gf_replaceall(ls_Select, ":", "@")
@@ -369,18 +356,17 @@ ls_Select =  gf_replaceall(ls_Select, "~t", " ")
 ls_Select =  gf_replaceall(ls_Select, "~r~n", " ")
 	
 //Remplazamos los Espacios en Blanco Inecesarios
-DO WHILE POS(ls_Select, "  ") > 0
+Do While Pos(ls_Select, "  ") > 0
 	ls_Select =  gf_replaceall(ls_Select, "  ", " ")
-LOOP	
+Loop
 	
 //Si quedal algun espacio al final lo quito.
-IF right(ls_Select, 1) = " "  THEN ls_select = Mid(ls_Select, 1, len(ls_select) - 1)
+If right(ls_Select, 1) = " "  Then ls_select = Mid(ls_Select, 1, len(ls_select) - 1)
 	
 SetProfileString (gs_fichero_ini, "ApiLog", "LastSQL", ls_select)
 //-----------------------------------------------------------------------------------------------
 
-
-RETURN ls_dwsyntax
+Return ls_dwsyntax
 end function
 
 public function long of_cargar (string as_sql);nvo_ds_api ds_data
@@ -398,22 +384,22 @@ If ll_RowCount < 0 Then Return -1
 
 ll_rv = ds_data.GetFullState(lblb_data)
 			
-IF ll_rv = -1 THEN
+If ll_rv = -1 Then
 	gf_mensaje("Error", "¡ GetFullState failed !")
 	Return -1
-END IF
+End If
 			
 ll_rv = This.SetFullState(lblb_data)
 			
-IF ll_rv = -1 THEN
+If ll_rv = -1 Then
 	gf_mensaje("Error", "¡ SetFullState failed !")
 	Return -1
-END IF
+End If
 
 Destroy ds_data
 
 //Formateamos el Datawindow
-this.PostEvent(constructor!)
+This.PostEvent(constructor!)
 
 Return ll_RowCount
 end function

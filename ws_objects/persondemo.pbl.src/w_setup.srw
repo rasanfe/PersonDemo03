@@ -366,7 +366,7 @@ If isvalid(w_mant_facturas) Then
 	w_mant_facturas.dw_lista.TriggerEvent(Constructor!)
 	w_mant_facturas.dw_1.TriggerEvent(Constructor!)
 End IF
-If isvalid(w_facturas) Then w_facturas.dw_1.TriggerEvent(Constructor!)
+If isvalid(w_con_facturas) Then w_con_facturas.dw_1.TriggerEvent(Constructor!)
 If isvalid(w_con_sql) Then w_con_sql.dw_new.TriggerEvent(Constructor!)
 
 

@@ -79,7 +79,7 @@ public subroutine wf_retrieve_dddw (string as_dddw)
 end prototypes
 
 public function long wf_retrieve_lista ();string ls_empresa, ls_anyo
-any a_values[]
+any aa_values[]
 Long ll_RowCount
 
 ls_empresa="1"
@@ -93,10 +93,10 @@ End if
 
 dw_lista.setredraw(false)		
 
-a_values[1]  = ls_empresa
-a_values[2]  = ls_anyo
+aa_values[1]  = ls_empresa
+aa_values[2]  = ls_anyo
 
-ll_RowCount = dw_lista.of_Retrieve(a_values[])
+ll_RowCount = dw_lista.of_Retrieve(aa_values[])
 
 dw_lista.setredraw(true)		
 
@@ -108,7 +108,7 @@ end function
 public subroutine wf_retrieve_dddw (string as_dddw);Long ll_RowCount
 String ls_Json1, ls_Json2, ls_Json3
 DataWindowChild dwc_1, dwc_2, dwc_3
-String l_values1[], l_values2[], l_values3[]
+String la_values1[], la_values2[], la_values3[]
 nvo_ds_api ds_1, ds_2,ds_3
 string ls_objname1, ls_objname2, ls_objname3
 Integer li_result
@@ -125,10 +125,10 @@ If as_dddw = "" or as_dddw = "cliente" Then
 	ds_1.DataObject =ls_objname1
 	
 	//Argumentos dddw Cliente
-	l_values1[1] =  dw_1.object.empresa[1]
+	la_values1[1] =  dw_1.object.empresa[1]
 	
 	//Datastore Auxiliar Cliente
-	ds_1.of_retrieve(l_values1[])
+	ds_1.of_retrieve(la_values1[])
 	ls_json1 = ds_1.ExportJson()
 	Destroy ds_1
 	
@@ -151,11 +151,11 @@ If as_dddw = "" or as_dddw = "obra" Then
 	
 	//Argumentos dddw Obra
 	dw_1.AcceptText()
-	l_values2[1] = dw_1.object.empresa[1]
-	l_values2[2] = dw_1.object.cliente[1]
+	la_values2[1] = dw_1.object.empresa[1]
+	la_values2[2] = dw_1.object.cliente[1]
 	
 	//Datastore Auxiliar Obra
-	ds_2.of_retrieve(l_values2[])
+	ds_2.of_retrieve(la_values2[])
 	ls_json2 = ds_2.ExportJson()
 	Destroy ds_2
 	
@@ -177,10 +177,10 @@ If as_dddw = "" or as_dddw = "cod_fp" Then
 	ds_3.DataObject =ls_objname3
 	
 	//Argumentos dddw Formass de Pago
-	l_values3[1] =  dw_1.object.empresa[1]
+	la_values3[1] =  dw_1.object.empresa[1]
 	
 	//Datastore Auxiliar Formas de Pago
-	ds_3.of_retrieve(l_values3[])
+	ds_3.of_retrieve(la_values3[])
 	ls_json3 = ds_3.ExportJson()
 	Destroy ds_3
 	
@@ -252,23 +252,23 @@ destroy(this.gb_busqueda)
 destroy(this.gb_registros)
 end on
 
-event open;Any l_values[]
+event open;Any la_values[]
 str_venfac lstr_venfac
 
 lstr_venfac =  Message.PowerObjectParm
 
-If isValid(lstr_venfac)  then
+If isValid(lstr_venfac)  Then
 	is_empresa=lstr_venfac.as_empresa
 	is_anyo=lstr_venfac.as_anyo
 	is_serie=lstr_venfac.as_serie
 	is_factura=lstr_venfac.as_factura
 	
-	l_values[1]=is_empresa
-	l_values[2]=is_anyo
-	l_values[3]=is_serie
-	l_values[4]=is_factura
+	la_values[1]=is_empresa
+	la_values[2]=is_anyo
+	la_values[3]=is_serie
+	la_values[4]=is_factura
 	
-	dw_1.of_retrieve(l_values[])
+	dw_1.of_retrieve(la_values[])
 End IF
 
 wf_retrieve_lista()
@@ -313,20 +313,20 @@ cb_sqlinsert.x = st_2.x +st_2.width+10
 cb_sqldelete.x=cb_sqlinsert.x+cb_sqlinsert.width+10
 cb_sqlupdate.x = cb_sqldelete.x+cb_sqldelete.width+10
 
-st_2.y = 24
-cb_sqlinsert.y = 0
-cb_sqldelete.y=0
-cb_sqlupdate.y = 0
+st_2.y = 28
+cb_sqlinsert.y = 24
+cb_sqldelete.y= 24
+cb_sqlupdate.y = 24
 
 st_1.x = dw_1.x + 100
 cb_insert.x = st_1.x +st_1.width+10
 cb_delete.x=cb_insert.x+cb_insert.width+10
 cb_update.x = cb_delete.x+cb_delete.width+10
 
-st_1.y = 148
-cb_insert.y = 124
-cb_delete.y=124
-cb_update.y = 124
+st_1.y = 152
+cb_insert.y = 140
+cb_delete.y=140
+cb_update.y = 140
 end event
 
 type st_registros from statictext within w_mant_facturas
@@ -352,7 +352,7 @@ integer x = 59
 integer y = 108
 integer width = 553
 integer height = 72
-integer textsize = -9
+integer textsize = -10
 integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
@@ -430,7 +430,7 @@ End If
 
 end event
 
-event getfocus;this.SelectText(1,Len(this.text))
+event getfocus;This.SelectText(1,Len(This.text))
 end event
 
 type dw_lista from vs_dw_api within w_mant_facturas
@@ -444,7 +444,7 @@ boolean vscrollbar = true
 boolean ib_logo = false
 end type
 
-event doubleclicked;call super::doubleclicked;Any l_values[]
+event doubleclicked;call super::doubleclicked;Any la_values[]
 
 If row < 1 then return
 
@@ -453,12 +453,12 @@ is_anyo=this.object.venfac_anyo[row]
 is_serie=this.object.serie[row]
 is_factura=this.object.factura[row]
 
-l_values[1]=is_empresa
-l_values[2]=is_anyo
-l_values[3]=is_serie
-l_values[4]=is_factura
+la_values[1]=is_empresa
+la_values[2]=is_anyo
+la_values[3]=is_serie
+la_values[4]=is_factura
 
-dw_1.of_retrieve(l_values[])
+dw_1.of_retrieve(la_values[])
 
 
 end event
@@ -472,6 +472,7 @@ end event
 
 type cb_sqlinsert from commandbutton within w_mant_facturas
 integer x = 4544
+integer y = 16
 integer width = 407
 integer height = 112
 integer taborder = 50
@@ -517,15 +518,34 @@ la_values[10] = 1210
 la_values[11] = "1"
 la_values[12] = "N"
 
-ls_sql = "INSERT INTO venfac (empresa, anyo, serie, factura, cliente, fecha_factura, forma_pago, subtotal, total_iva, total_factura, obra, situacion) "+&
-			"VALUES (@empresa, @anyo, @serie, @factura, @cliente, @fecha_factura, @forma_pago, @subtotal, @total_iva, @total_factura, @obra, @situacion)"
+ls_sql = "Insert Into venfac (empresa, "+&
+													"anyo, "+&
+													"serie, "+&
+													"factura, "+&
+													"cliente, "+&
+													"fecha_factura, "+&
+													"forma_pago, "+&
+													"subtotal, "+&
+													"total_iva, "+&
+													"total_factura, "+&
+													"obra, "+&
+													"situacion) "+&
+										"Values (@empresa, "+&
+													"@anyo, "+&
+													"@serie, "+&
+													"@factura, "+&
+													"@cliente, "+&
+													"@fecha_factura, "+&
+													"@forma_pago, "+&
+													"@subtotal, "+&
+													"@total_iva, "+&
+													"@total_factura, "+&
+													"@obra, @situacion)"
 
-ln_exec = CREATE n_cst_sqlexecutor
+ln_exec = Create n_cst_sqlexecutor
 ll_result = ln_exec.of_insert ( ls_sql, la_values[])
 
-IF ll_result > -1 THEN
-	MessageBox("Insert", "Resultado Correcto")
-	
+If ll_result > -1 Then
 	la_values[] = la_null[]
 	la_values[1]=is_empresa
 	la_values[2]=is_anyo
@@ -533,15 +553,16 @@ IF ll_result > -1 THEN
 	la_values[4]=is_factura
 	
 	dw_1.of_retrieve(la_values[])
-END IF
+End If
 
-DESTROY ln_exec
+Destroy ln_exec
 
 wf_retrieve_lista()
 end event
 
 type cb_sqlupdate from commandbutton within w_mant_facturas
 integer x = 5367
+integer y = 16
 integer width = 402
 integer height = 112
 integer taborder = 70
@@ -564,7 +585,7 @@ ll_Row=  dw_1.GetRow()
 
 If ll_Row < 1 Then Return
 
-If Messagebox("Atencion!","¿Desea Actualizar la Base de Datos?", Exclamation!, OkCancel!)=2 Then Return
+If Messagebox("Atención!","¿Desea Actualizar la Base de Datos?", Question!, YesNo!)=2 Then Return
 
 is_empresa=dw_1.object.empresa[ll_Row]
 is_anyo=dw_1.object.venfac_anyo[ll_Row]
@@ -583,30 +604,31 @@ la_values[9] = is_anyo
 la_values[10] = is_serie
 la_values[11] = is_factura
 
-ls_sql = "UPDATE venfac "+&
-			"SET fecha_factura = @fecha, "+&
-			"cliente=@cliente, "+&
-			"obra=@obra, "+&
-			"forma_pago=@forma, "+&
-			"subtotal=@subtotal, "+&
-			"total_iva=@total_iva, "+&
-			"total_factura=@importe "+&
-			"WHERE empresa= @empresa "+&
-			"AND anyo=@anyo "+&
-			"AND serie=@serie "+&
-			"AND factura = @factura"
+ls_sql = "Update venfac "+&
+				"Set fecha_factura = @fecha, "+&
+						"cliente=@cliente, "+&
+						"obra=@obra, "+&
+						"forma_pago=@forma, "+&
+						"subtotal=@subtotal, "+&
+						"total_iva=@total_iva, "+&
+						"total_factura=@importe "+&
+				"Where empresa=@empresa "+&
+				"And anyo=@anyo "+&
+				"And serie=@serie "+&
+				"And factura=@factura"
 
-ln_exec = CREATE n_cst_sqlexecutor
+ln_exec = Create n_cst_sqlexecutor
 lb_result = ln_exec.of_Update( ls_sql, la_values[])
-DESTROY ln_exec
+Destroy ln_exec
 
-IF lb_result  THEN
+If lb_result  Then
 	wf_retrieve_lista()
-END IF
+End If
 end event
 
 type cb_sqldelete from commandbutton within w_mant_facturas
 integer x = 4955
+integer y = 16
 integer width = 402
 integer height = 112
 integer taborder = 60
@@ -623,14 +645,13 @@ event clicked;n_cst_sqlexecutor ln_exec
 String ls_sql
 any la_values[]
 Boolean lb_result
-
 Long ll_Row
 
 ll_Row=  dw_1.GetRow()
 
 If ll_Row < 1 Then Return
 
-If Messagebox("Atencion!","¿Desea Eliminar el Registro?", Exclamation!, OkCancel!)=2 Then Return
+If Messagebox("Atención!","¿Desea Eliminar el Registro?", Question!, YesNo!)=2 Then Return
 
 is_empresa=dw_1.object.empresa[ll_Row]
 is_anyo=dw_1.object.venfac_anyo[ll_Row]
@@ -642,31 +663,31 @@ la_values[2] = is_anyo
 la_values[3] = is_serie
 la_values[4] = is_factura
 
-ls_sql = "DELETE venfac "+&
-			"WHERE empresa= @empresa "+&
-			"AND anyo=@anyo "+&
-			"AND serie=@serie "+&
-			"AND factura = @factura"
+ls_sql = "Delete venfac "+&
+				"Where empresa= @empresa "+&
+				"And anyo=@anyo "+&
+				"And serie=@serie "+&
+				"And factura = @factura"
 
-ln_exec = CREATE n_cst_sqlexecutor
+ln_exec = Create n_cst_sqlexecutor
 lb_result = ln_exec.of_delete( ls_sql, la_values[])
-DESTROY ln_exec
+Destroy ln_exec
 
-IF lb_result  THEN
+If lb_result  Then
 	wf_retrieve_lista()
 	dw_1.Reset()
-END IF
+End If
 
 
 
 end event
 
 type st_2 from statictext within w_mant_facturas
-integer x = 4192
-integer y = 24
-integer width = 334
+integer x = 4064
+integer y = 40
+integer width = 462
 integer height = 68
-integer textsize = -10
+integer textsize = -12
 integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
@@ -675,15 +696,16 @@ string facename = "Tahoma"
 long textcolor = 33554432
 long backcolor = 67108864
 string text = "SqlExecutor"
+alignment alignment = right!
 boolean focusrectangle = false
 end type
 
 type st_1 from statictext within w_mant_facturas
-integer x = 4192
-integer y = 148
-integer width = 334
+integer x = 4064
+integer y = 164
+integer width = 462
 integer height = 68
-integer textsize = -10
+integer textsize = -12
 integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
@@ -692,12 +714,13 @@ string facename = "Tahoma"
 long textcolor = 33554432
 long backcolor = 67108864
 string text = "Datawindow"
+alignment alignment = right!
 boolean focusrectangle = false
 end type
 
 type cb_delete from commandbutton within w_mant_facturas
 integer x = 4955
-integer y = 124
+integer y = 140
 integer width = 402
 integer height = 112
 integer taborder = 30
@@ -717,7 +740,7 @@ ll_Row=  dw_1.GetRow()
 
 If ll_Row < 1 Then Return
 
-If Messagebox("Atencion!","¿Desea Eliminar el Registro?", Exclamation!, OkCancel!)=2 Then Return
+If Messagebox("Atención!","¿Desea Eliminar el Registro?", Question!, YesNo!)=2 Then Return
 
 If dw_1.of_DeleteRow(ll_Row) = 1 Then
 	If dw_1.of_Update() = 1 Then
@@ -729,7 +752,7 @@ end event
 
 type cb_update from commandbutton within w_mant_facturas
 integer x = 5367
-integer y = 124
+integer y = 140
 integer width = 402
 integer height = 112
 integer taborder = 40
@@ -742,7 +765,7 @@ string facename = "Tahoma"
 string text = "Update"
 end type
 
-event clicked;If Messagebox("Atencion!","¿Desea Actualizar la Base de Datos?", Exclamation!, OkCancel!)=2 Then Return
+event clicked;If Messagebox("Atención!","¿Desea Actualizar la Base de Datos?", Question!, YesNo!)=2 Then Return
 
 If dw_1.of_Update() = 1 Then 
 	wf_retrieve_lista()
@@ -751,7 +774,7 @@ end event
 
 type cb_insert from commandbutton within w_mant_facturas
 integer x = 4544
-integer y = 124
+integer y = 140
 integer width = 402
 integer height = 112
 integer taborder = 20
@@ -887,7 +910,7 @@ integer y = 44
 integer width = 4005
 integer height = 164
 integer taborder = 10
-integer textsize = -8
+integer textsize = -10
 integer weight = 400
 fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!

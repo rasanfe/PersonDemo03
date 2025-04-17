@@ -8,7 +8,7 @@ end prototypes
 
 global function datetime gf_fecha_factura (string as_empresa, string as_anyo, string as_serie);n_cst_sqlexecutor ln_exec
 String ls_sql
-Any l_values[]
+Any la_values[]
 any la_result[]
 Datetime ldt_ffactura
 
@@ -24,11 +24,11 @@ ls_sql = "SELECT max(fecha_factura) "+&
 			 "AND anyo = @anyo  "+&	
 			  "AND serie = @serie "	
 			 
-l_values[1] = as_empresa
-l_values[2] = as_anyo
-l_values[3] = as_serie
+la_values[1] = as_empresa
+la_values[2] = as_anyo
+la_values[3] = as_serie
 
-la_result[] = ln_exec.of_SelectInto(ls_sql, l_values[])
+la_result[] = ln_exec.of_SelectInto(ls_sql, la_values[])
 
 ldt_ffactura = DateTime(la_result[1])
 Destroy ln_exec

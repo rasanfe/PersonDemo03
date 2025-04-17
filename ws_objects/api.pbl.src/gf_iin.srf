@@ -37,25 +37,25 @@ PowerBuilder® source code by other than STD, Inc. is prohibited.
 
 // Declarations
 
-Integer		li_loop																					// Work Var
-Integer		li_max																						// Work Var
-String			ls_type																					// Work Var
-Boolean		lb_rc = FALSE																			// Work Var
-ls_type		=	ClassName (aa_value)															// Get 1st arg's data type
-li_max			=	UpperBound (aa_check[])														// Get # of 2nd Arg's.
+Integer		li_loop
+Integer		li_max
+String			ls_type
+Boolean		lb_rc = False
+ls_type		=	ClassName(aa_value)															// Get 1st arg's data type
+li_max			=	UpperBound(aa_check[])														// Get # of 2nd Arg's.
 
-FOR  li_loop		=	1  to  li_max																		// Loop thru data
-	IF  ClassName (aa_check[li_loop] )  <>  ls_type THEN								// Data type match?
+For  li_loop = 1 To li_max																		// Loop thru data
+	If  ClassName(aa_check[li_loop] )  <>  ls_type Then								// Data type match?
 		Continue																								// NO=>Continue the loop!
-	ELSE
-		IF  aa_check[li_loop]	=	aa_value THEN													// YES=>Values Equal?
-			lb_rc	=	 TRUE																					// YES=>Set RC
-			EXIT																									// Exit the Loop!
-		END IF
-	END IF
-NEXT
+	Else
+		If  aa_check[li_loop]	=	aa_value Then												// YES=>Values Equal?
+			lb_rc	=	 True																				// YES=>Set RC
+			Exit																									// Exit the Loop!
+		End If
+	End If
+Next
 
-RETURN	lb_rc 																						// RETURN RC to caller
+Return lb_rc 																						// RETURN RC to caller
 
 end function
 

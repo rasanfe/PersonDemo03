@@ -8,21 +8,21 @@ end prototypes
 
 global function string gf_nombre_empresa (string as_empresa);n_cst_sqlexecutor ln_exec
 String ls_sql
-Any l_values[]
+Any la_values[]
 String ls_result[]
 String ls_nombre
 
-If isnull(as_empresa) or trim(as_empresa) = "" then Return ""
+If IsNull(as_empresa) Or Trim(as_empresa) = "" Then Return ""
 
 ln_exec = Create n_cst_sqlexecutor
 	
-ls_sql = "SELECT nombre "+&
-			 "FROM empresas "+&
-			 "WHERE empresa = @empresa"		
+ls_sql = "Select nombre "+&
+				 "From empresas "+&
+				 "Where empresa = @empresa"		
 			 
-l_values[1] = as_empresa
+la_values[1] = as_empresa
 
-ls_result[] = ln_exec.of_SelectInto(ls_sql, l_values[])
+ls_result[] = ln_exec.of_SelectInto(ls_sql, la_values[])
 
 ls_nombre = ls_result[1] 
 Destroy ln_exec

@@ -19,23 +19,18 @@ forward prototypes
 public function integer of_getarguments (ref string as_argnames[], ref string as_argdatatypes[])
 public subroutine of_setarguments (string as_argnames[], string as_argdatatypes[], any aa_argvalues[])
 private function string of_encode (string as_source)
-public function long of_retrieve (any a_values[])
+public function long of_retrieve (any aa_values[])
 public function string of_get_syntax ()
 public function long of_cargar (string as_sql)
 private function string of_create_syntax (string as_column[], string as_types[], string as_longitud[])
 private function long of_get_json_schema (string as_json, ref string as_columns[], ref string as_types[], ref string as_lens[])
 end prototypes
 
-public function integer of_getarguments (ref string as_argnames[], ref string as_argdatatypes[]);string       ls_dsargs, ls_dsargswithtype[], ls_args[], ls_types[]
-long         ll_a, ll_args, ll_pos, ll_index
-
-// Comprobamos Si hay Asignado un Datawindow
-//if IsNull(this.dataobject) or this.dataobject="" then
-//   return -1
-//end if
+public function integer of_getarguments (ref string as_argnames[], ref string as_argdatatypes[]);String       ls_dsargs, ls_dsargswithtype[], ls_args[], ls_types[]
+Long         ll_a, ll_args, ll_pos, ll_index
 
 // Obtenemos el string con los argumentos del dw o ds.
-ls_dsargs = this.DYNAMIC Describe ( "DataWindow.Table.Arguments" ) 
+ls_dsargs = This.Dynamic Describe ( "DataWindow.Table.Arguments" ) 
 
 // Separamos los argumentos utilizando la un array y obtenemos el número total.
 ll_args = gf_ParseToArray ( ls_dsargs, "~n", ls_dsargswithtype ) 
@@ -48,28 +43,21 @@ For ll_a = 1 to ll_args
       ll_index = UpperBound(as_argnames) + 1
       as_argNames[ll_index]      = Left ( ls_dsargswithtype[ll_a], ll_pos - 1 ) 
       as_argDataTypes[ll_index] = Mid ( ls_dsargswithtype[ll_a], ll_pos + 1 ) 
-      // Cargamos el valor correspondiente. Si es de tipo array ponemos cadena vacía.
-			//If right(as_argDataTypes[ll_index], 4) = 'list' Then
-			//	as_argValues[ll_index] = ''
-			//Else
-				//as_argValues[ll_index] =this.DYNAMIC Describe("evaluate('" + as_argNames[UpperBound(as_argnames)] + "',1)") 
-			//End If
 	End If
 Next
 
 Return UpperBound(as_argNames)
-
 end function
 
-public subroutine of_setarguments (string as_argnames[], string as_argdatatypes[], any aa_argvalues[]);string      ls_object, ls_objects, ls_type, ls_expression
-string      ls_value, ls_aux
-integer     li_len, li_to, li_from, li_x, li_pos
+public subroutine of_setarguments (string as_argnames[], string as_argdatatypes[], any aa_argvalues[]);String      ls_object, ls_objects, ls_type, ls_expression
+String      ls_value, ls_aux
+Integer     li_len, li_to, li_from, li_x, li_pos
 
 // Obtenemos la colección de objetos de ds.
-ls_objects = this.describe('datawindow.objects')
+ls_objects = This.Describe('datawindow.objects')
 
 // Recorremos los todos objetos.
-li_len = len(ls_objects)
+li_len = Len(ls_objects)
 
 If li_len > 0 Then
    // Inicializamos la variable necesaria desde la que buscamos el siguiente objeto.
@@ -77,41 +65,41 @@ If li_len > 0 Then
    
    // Recorremos todos los objetos.
    Do
-      li_to = pos(ls_objects, "~t", li_from)
+      li_to = Pos(ls_objects, "~t", li_from)
       
       // Obtenemos el nombre del objeto.
       If li_to = 0 Then
-         ls_object = mid(ls_objects, li_from)
+         ls_object = Mid(ls_objects, li_from)
       Else
-         ls_object = mid(ls_objects, li_from, li_to - li_from)
+         ls_object = Mid(ls_objects, li_from, li_to - li_from)
       End If
       
-      If len(ls_object) > 0 Then
+      If Len(ls_object) > 0 Then
          // Obtenemos el tipo del objeto.
-         ls_type = this.describe(ls_object + '.type')
+         ls_type = This.Describe(ls_object + '.type')
          
          // Solo si es computado comprobamos si su expresión contiene "retrieval arguments".
          If ls_type = "compute" Then
-            ls_expression = this.describe(ls_object + '.expression')
+            ls_expression = This.Describe(ls_object + '.expression')
             
             // Para cada objeto miramos todos los "retrieval arguments".
-            For li_x = 1 To upperBound(as_argNames)      
+            For li_x = 1 To UpperBound(as_argNames)      
                // Solo tratamos argumentos que no sean array.
-               If right(as_argDataTypes[li_x], 4) = 'list' Then
+               If Right(as_argDataTypes[li_x], 4) = 'list' Then
                   Continue
                Else
-                  li_pos = pos(ls_expression, as_argNames[li_x])
+                  li_pos = Pos(ls_expression, as_argNames[li_x])
    
                   Do While li_pos > 0 
                      // Comprobamos que no sea otro identificador distinto, para lo que
                      // el carácter que lo precede y el que le sigue debe ser distinto
                      // de letra o número. (si buscamos 'numeropi' que no tome 'numeropista')                  
-                     If ((li_pos = 1) Or match(mid(ls_expression, li_pos -1, 1), '[^A-Z^a-z^0-9]')) And &
-                        ((li_pos + len(as_argNames[li_x]) - 1 = len(ls_expression)) Or match(mid(ls_expression, li_pos + len(as_argNames[li_x]), 1), '[^A-Z^a-z^0-9]')) Then
+                     If ((li_pos = 1) Or Match(Mid(ls_expression, li_pos -1, 1), '[^A-Z^a-z^0-9]')) And &
+                        ((li_pos + Len(as_argNames[li_x]) - 1 = Len(ls_expression)) Or Match(Mid(ls_expression, li_pos + Len(as_argNames[li_x]), 1), '[^A-Z^a-z^0-9]')) Then
    
                      
 					// Hay que tratar los argumentos Nulos.
-					IF isnull(aa_argValues[li_x]) THEN
+					If IsNull(aa_argValues[li_x]) Then
 						Choose Case as_argDataTypes[li_x]
 							Case 'number'
 								 ls_value ="0"
@@ -126,9 +114,9 @@ If li_len > 0 Then
 							Case Else
 									// En un computado no podría aparecer otro tipo.
 							End Choose	
-					ELSE	
+					Else
 						   ls_value = string(aa_argValues[li_x])
-					END IF			
+					End If			
 					                        
                         // Obtenemos la nueva expresión para el computado en base al tipo de dato.
                         Choose Case as_argDataTypes[li_x]
@@ -146,26 +134,26 @@ If li_len > 0 Then
                               // En un computado no podría aparecer otro tipo.
                         End Choose
                         
-                        ls_expression = replace(ls_expression, li_pos, len(as_argNames[li_x]), ls_aux)
+                        ls_expression = Replace(ls_expression, li_pos, Len(as_argNames[li_x]), ls_aux)
                      End If
                         
                      // Buscamos si la misma ocurrencia aparece otra vez.
-                     li_pos = pos(ls_expression, as_argNames[li_x])
+                     li_pos = Pos(ls_expression, as_argNames[li_x])
                   Loop
                End If
             Next
             
             // Si se modifico la expresión para el compute la sustituimos con la nueva.
-            If ls_expression <> this.describe(ls_object + '.expression') Then
+            If ls_expression <> This.Describe(ls_object + '.expression') Then
 
                // Antes de hacer el modify, hay que añadir delante de las comillas dobles la virgulilla.
-               li_pos = pos(ls_expression, '"')
-               do while li_pos > 0
-                  ls_expression = replace(ls_expression, li_pos, 0, "~~")
-                  li_pos = pos(ls_expression, '"', li_pos + 2)
+               li_pos = Pos(ls_expression, '"')
+               Do While li_pos > 0
+                  ls_expression = Replace(ls_expression, li_pos, 0, "~~")
+                  li_pos = Pos(ls_expression, '"', li_pos + 2)
                Loop
                
-               ls_aux = this.Modify(ls_object + ".expression=~"" + ls_expression + "~"")
+               ls_aux = This.Modify(ls_object + ".expression=~"" + ls_expression + "~"")
                
             End If
          End If
@@ -178,95 +166,102 @@ end subroutine
 
 private function string of_encode (string as_source);String ls_Select
 String ls_encoded
-n_cst_coderobject ln_coder 
+n_CoderObject ln_coder 
 
-ln_coder =  CREATE n_cst_coderobject
+ln_coder =  Create n_CoderObject
 
 ls_encoded = ln_coder.of_encode(as_source)
 
 Destroy ln_coder
 
-RETURN ls_encoded
+Return ls_encoded
 end function
 
-public function long of_retrieve (any a_values[]);Long ll_RowCount
+public function long of_retrieve (any aa_values[]);Long ll_RowCount
 String ls_url, ls_ApiVerb
 Any la_Array[]
 String ls_Json, ls_jsonReceived
 n_JsonGenerator lnv_JsonGenerator
 String ls_Syntax, ls_encodedSyntax
 String ls_argnames[], ls_argdatatypes[]
-Any l_values[], l_null[]
+Any la_values[], la_Null[]
 Integer li_value, li_TotalValues, li_result, li_new
 
-Reset()
+This.Reset()
 
-IF DataObject = "" THEN
+If DataObject = "" Then
 	gf_mensaje("Datastore Api Error", "¡ No hay DataObject asignado al Datastore !")
-	RETURN -1
-END IF	
+	Return -1
+End If	
 
-li_TotalValues=UpperBound(a_values[])
+li_TotalValues=UpperBound(aa_values[])
 
-ls_Syntax = this.of_Get_Syntax()
+//1- Obtener la Sintaxi 
+ls_Syntax = of_Get_Syntax()
 
-If ls_Syntax = "" then return -1
+If ls_Syntax = "" Then Return -1
 
-
+//2- Codificar en Base64
 ls_encodedSyntax = of_encode(ls_Syntax)
-		
+
+//3- Preparamos Primer Elemento del Json con la Syntaxi		
 li_new = 1
 ls_argnames[li_new]="sqlEncoded"
 ls_argdatatypes[li_new]="string"
-l_values[li_new]=ls_encodedSyntax
+la_values[li_new]=ls_encodedSyntax
 	
+//4- Obetnermos los Argumentos del DataStore	
 li_result= of_getarguments (ref is_dsargnames[], ref is_dsargdatatypes[])
 	
-IF li_result > li_TotalValues THEN
+If li_result > li_TotalValues Then
 	gf_mensaje("Json Error", "Expecting "+string(li_result)+" retrieval arguments but got "+string(li_TotalValues)+".")
-	RETURN -1
-END IF	
+	Return -1
+End If
 	
-//Imitando el fucnionamiento de los DataStore
-//Si le paso mas argumentos de los admitidos ignoro los que sobran.
-//Esto es util por si a los reports les añades argumentos
-IF li_result < li_TotalValues THEN
+//5 - Si recibo mas argumentos de los admitidos ignoro los que sobran.
+If li_result < li_TotalValues Then
 	li_TotalValues = li_result	
-END IF	
+End If	
 	
-FOR li_value = 1 to li_TotalValues
+// 6- Preparamos con los Argumentos los siguientes elementos del Json  	
+For li_value = 1 To li_TotalValues
 	li_new ++
 	ls_argnames[li_new]=is_dsargnames[li_value]
 	ls_argdatatypes[li_new]=is_dsargdatatypes[li_value]
-	l_values[li_new]=a_values[li_value]
-NEXT	
-	
+	la_values[li_new]=aa_values[li_value]
+Next
+
+// 7- Creamos el Json
 lnv_JsonGenerator = Create n_JsonGenerator
-ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], l_values[])
+ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], la_values[])
 Destroy lnv_JsonGenerator
 
+//8- Preparamos la URL 
 ls_ApiVerb = "POST"
 ls_url =  gn_api.of_get_url(is_Controller, "Retrieve")
-	
+
+//9- Hacemos llamada POST
 gn_api.of_Post(ls_url, ls_Json, ref ls_jsonReceived)
+
+//10- Importamos Json Recibido
 ll_RowCount = ImportJson(ls_jsonReceived)
 
-IF ll_RowCount < 0 THEN
+If ll_RowCount < 0 Then
 	gf_mensaje(ls_ApiVerb + " Request Error "+string(ll_RowCount), gn_api.of_get_error_text())
-END IF
+End If
 
+//11- Recargo los Retrieval Argument por si se usan en funciones o otras cosas.
+of_setarguments(is_dsargnames[], is_dsargdatatypes[], aa_values[])
 
-//Recargo los Retrieval Argument por si se usan en funciones o otras cosas.
-of_setarguments(is_dsargnames[], is_dsargdatatypes[], a_values[])
-
-ResetUpdate()
-ia_values[] = a_values[] //Guardo los valores	
-a_values[] = l_null[]
-is_dsargnames[] = l_null[]
-is_dsargdatatypes[] = l_null[]
+//12- Actualizamos Banderas y reseteamos variables	
+This.ResetUpdate()
+ia_values[] = aa_values[] //Guardo los valores	
+aa_values[] = la_Null[]
+is_dsargnames[] = la_Null[]
+is_dsargdatatypes[] = la_Null[]
 
 This.Event Retrieveend(ll_RowCount)
-RETURN ll_RowCount
+Return ll_RowCount
 end function
 
 public function string of_get_syntax ();String ls_dwsyntax, ls_select
@@ -287,17 +282,17 @@ ls_Select =  gf_replaceall(ls_Select, "~t", " ")
 ls_Select =  gf_replaceall(ls_Select, "~r~n", " ")
 	
 //Remplazamos los Espacios en Blanco Inecesarios
-DO WHILE POS(ls_Select, "  ") > 0
+Do While POS(ls_Select, "  ") > 0
 	ls_Select =  gf_replaceall(ls_Select, "  ", " ")
-LOOP	
+Loop
 	
 //Si quedal algun espacio al final lo quito.
-IF right(ls_Select, 1) = " "  THEN ls_select = Mid(ls_Select, 1, len(ls_select) - 1)
+If right(ls_Select, 1) = " "  Then ls_select = Mid(ls_Select, 1, len(ls_select) - 1)
 	
 SetProfileString (gs_fichero_ini, "ApiLog", "LastSQL", ls_select)
 //-----------------------------------------------------------------------------------------------
 
-RETURN ls_dwsyntax
+Return ls_dwsyntax
 end function
 
 public function long of_cargar (string as_sql);String ls_url, ls_ApiVerb
@@ -305,7 +300,7 @@ public function long of_cargar (string as_sql);String ls_url, ls_ApiVerb
 String  ls_json, ls_jsonreceived
 String ls_encodedSQL
 String ls_argnames[], ls_argdatatypes[]
-Any l_values[]
+Any la_values[]
 Integer li_value, li_TotalValues, li_result, li_new
 String ls_columns[], ls_types[], ls_lens[]
 Long ll_columnas, ll_RowCount
@@ -320,10 +315,10 @@ ls_encodedSQL = of_encode(as_sql)
 li_new = 1
 ls_argnames[li_new]="sqlEncoded"
 ls_argdatatypes[li_new]="string"
-l_values[li_new]=ls_encodedSQL
+la_values[li_new]=ls_encodedSQL
 
 lnv_JsonGenerator = Create n_JsonGenerator
-ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], l_values[])
+ls_json = lnv_JsonGenerator.of_set_arguments(ls_argnames[], ls_argdatatypes[], la_values[])
 Destroy lnv_JsonGenerator
 	
 //3- Preparamos URL y hacemos llamada a la Api	
@@ -367,10 +362,14 @@ end function
 
 private function string of_create_syntax (string as_column[], string as_types[], string as_longitud[]);// Crea un objeto de tipo DataWindow externo
 DataWindowChild ldwc
-string ls_dwSyntax
+String ls_dwSyntax
 Long ll_TotalColumnas
 Integer li_col, li_rc
 String ls_columnName, ls_columnType, ls_columnLength
+Long ll_x_position
+Integer li_column_width = 485
+Integer li_column_height = 72
+String ls_format, ls_alignment
 
 ll_TotalColumnas = UpperBound(as_column)
 
@@ -391,104 +390,96 @@ ls_dwSyntax = "release 22;"+char(13)+&
 " gradient.focus='0' gradient.scale='100' gradient.spread='100' )"+char(13)+&
 "table("
 
-// Ajuste de posición inicial
-Long ll_x_position
-integer li_column_width = 485
-integer li_column_height = 72
-string ls_format, ls_alignment
-
-
 // Recorre el array deserializado y construye las columnas del DataWindow
-FOR li_col = 1 TO ll_TotalColumnas
+For li_col = 1 To ll_TotalColumnas
     ls_columnName = as_column[li_col]
     ls_columnType = Lower(as_types[li_col]) // Asegurar que el tipo esté en minúsculas
     ls_columnLength = as_longitud[li_col]
 
     // Validar longitud, si es vacío o nulo, asignar un valor por defecto (p.ej., 50)
-    IF IsNull(ls_columnLength) OR ls_columnLength = "" THEN
+    If IsNull(ls_columnLength) OR ls_columnLength = "" Then
         ls_columnLength = "50"
-    END IF
+    End If
 
     // Determina el tipo de dato de PowerBuilder
-    CHOOSE CASE ls_columnType
-        CASE "integer", "byte", "number"
-         	   ls_dwSyntax += "column=(type=number updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 
-		CASE "long"
+    Choose Case ls_columnType
+    Case "integer", "byte", "number"
+     		ls_dwSyntax += "column=(type=number updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 
+	  Case "long"
 			 ls_dwSyntax += "column=(type=long updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 	
-        CASE "char", "string"
+      Case "char", "string"
 			 ls_dwSyntax += "column=(type=char("+ls_columnLength+") updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 
-		CASE "date"
+		Case "date"
 			ls_dwSyntax += "column=(type=date updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 
-		CASE "datetime"
+		Case "datetime"
              ls_dwSyntax += "column=(type=datetime updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 
-		CASE "time" 
+		Case "time" 
 			  ls_dwSyntax += "column=(type=time updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 
-        CASE "decimal"
+      Case "decimal"
 			 if ls_columnLength = "Null" then ls_columnLength = "2"
            	 ls_dwSyntax += "column=(type=Decimal("+ls_columnLength+") updatewhereclause=yes name="+ls_columnName+" dbname='"+ls_columnName+"' )"+char(13) 
-          CASE ELSE
+      Case ELSE
             gf_mensaje("Error", "Tipo de dato desconocido: " + ls_columnType)
-            RETURN ""
-    END CHOOSE
-
-NEXT
+            Return ""
+    	End Choose
+Next
 
 ls_dwSyntax += ")"+char(13) 
 
 //COLUMNAS
 ll_x_position = 0  // Coordenada inicial de la primera fila
 // Recorre el array deserializado y construye las columnas del DataWindow
-FOR li_col = 1 TO ll_TotalColumnas
+For li_col = 1 To ll_TotalColumnas
     ls_columnName = as_column[li_col]
 	ls_columnLength = as_longitud[li_col]
 	ls_columnType = Lower(as_types[li_col]) // Asegurar que el tipo esté en minúsculas
 
     // Validar longitud, si es vacío o nulo, asignar un valor por defecto (p.ej., 50)
-    IF IsNull(ls_columnLength) OR ls_columnLength = "" THEN
+    If IsNull(ls_columnLength) OR ls_columnLength = "" Then
         ls_columnLength = "50"
-    END IF
+    End If
 	 
-	 CHOOSE CASE ls_columnType
-		CASE  "decimal"
+	 Choose Case ls_columnType
+		Case  "decimal"
 			 li_column_width = 485
 			 ls_format="###,###,###,##0.00"
 			 ls_alignment="1"
-		CASE "integer", "byte", "long"
+		Case "integer", "byte", "long"
 			 li_column_width = 485
 			ls_format="[general]"
       		 ls_alignment="1"
-		CASE "char", "string"
+		Case "char", "string"
 			 li_column_width = 485
 			//li_column_width= integer(ls_columnLength) * 30
 			//if 	li_column_width > 1600 then li_column_width =1600
 			ls_format="[general]"
 			ls_alignment="0"
-		CASE  "date",  "datetime"
+		Case  "date",  "datetime"
 			 li_column_width = 485
 			 ls_format="dd-mm-yy"
 			 ls_alignment="2"
-		CASE  "time"
+		Case  "time"
 			 li_column_width = 485
 			 ls_format="hh:mm:ss"
 			 ls_alignment="2"	 
-	END CHOOSE
+	End Choose
 
      ls_dwSyntax += "column(band=detail id="+ String(li_col) +" alignment='"+ls_alignment+"' tabsequence="+ String(32766) +" border='0' color='0'  x='" + String(ll_x_position) + "' y='4' height='" + String(li_column_height) + "' width='" + String(li_column_width) + "' format='"+ls_format+"' html.valueishtml='0'  name="+ls_columnName+" visible='1' edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face='Tahoma' font.height='-10' font.weight='400'  font.family='2' font.pitch='2' font.charset='0' background.mode='1' background.color='536870912' background.transparency='0' background.gradient.color='8421504' background.gradient.transparency='0' background.gradient.angle='0' background.brushmode='0' background.gradient.repetition.mode='0' background.gradient.repetition.count='0' background.gradient.repetition.length='100' background.gradient.focus='0' background.gradient.scale='100' background.gradient.spread='100' tooltip.backcolor='134217752' tooltip.delay.initial='0' tooltip.delay.visible='32000' tooltip.enabled='0' tooltip.hasclosebutton='0' tooltip.icon='0' tooltip.isbubble='0' tooltip.maxwidth='0' tooltip.textcolor='134217751' tooltip.transparency='0' transparency='0' )"+char(13)
 
     // Incrementa la posición X para la siguiente columna
     ll_x_position += li_column_width 
-NEXT
+Next
 
 //ETIQUETAS TEXTO:
 ll_x_position = 0  
-FOR li_col = 1 TO ll_TotalColumnas
+For li_col = 1 To ll_TotalColumnas
     ls_columnName = as_column[li_col]
 	 
-   	 ls_dwSyntax += "text(band=header alignment='2' text='"+ls_columnName+"' border='0' color='0' x='" + String(ll_x_position) + "' y='4' height='" + String(li_column_height) + "' width='" + String(li_column_width) +"' html.valueishtml='0'  name="+ls_columnName+"_t visible='1'  font.face='Tahoma' font.height='-10' font.weight='400'  font.family='2' font.pitch='2' font.charset='0' background.mode='1' background.color='536870912' background.transparency='0' background.gradient.color='8421504' background.gradient.transparency='0' background.gradient.angle='0' background.brushmode='0' background.gradient.repetition.mode='0' background.gradient.repetition.count='0' background.gradient.repetition.length='100' background.gradient.focus='0' background.gradient.scale='100' background.gradient.spread='100' tooltip.backcolor='134217752' tooltip.delay.initial='0' tooltip.delay.visible='32000' tooltip.enabled='0' tooltip.hasclosebutton='0' tooltip.icon='0' tooltip.isbubble='0' tooltip.maxwidth='0' tooltip.textcolor='134217751' tooltip.transparency='0' transparency='0' )"+CHAR(13)
+	 ls_dwSyntax += "text(band=header alignment='2' text='"+ls_columnName+"' border='0' color='0' x='" + String(ll_x_position) + "' y='4' height='" + String(li_column_height) + "' width='" + String(li_column_width) +"' html.valueishtml='0'  name="+ls_columnName+"_t visible='1'  font.face='Tahoma' font.height='-10' font.weight='400'  font.family='2' font.pitch='2' font.charset='0' background.mode='1' background.color='536870912' background.transparency='0' background.gradient.color='8421504' background.gradient.transparency='0' background.gradient.angle='0' background.brushmode='0' background.gradient.repetition.mode='0' background.gradient.repetition.count='0' background.gradient.repetition.length='100' background.gradient.focus='0' background.gradient.scale='100' background.gradient.spread='100' tooltip.backcolor='134217752' tooltip.delay.initial='0' tooltip.delay.visible='32000' tooltip.enabled='0' tooltip.hasclosebutton='0' tooltip.icon='0' tooltip.isbubble='0' tooltip.maxwidth='0' tooltip.textcolor='134217751' tooltip.transparency='0' transparency='0' )"+CHAR(13)
 
     // Incrementa la posición X para la siguiente columna
     ll_x_position += li_column_width  
-NEXT
+Next
 
 ls_dwSyntax +="htmltable(border='1' )"+char(13)+&
 "htmlgen(clientevents='1' clientvalidation='1' clientcomputedfields='1' clientformatting='0' clientscriptable='0' generatejavascript='1' encodeselflinkargs='1' netscapelayers='0' pagingmethod=0 generatedddwframes='1' )"+char(13)+&
@@ -504,8 +495,7 @@ ls_dwSyntax +="htmltable(border='1' )"+char(13)+&
 // Muestra la sintaxis generada para depurar
 ls_dwSyntax  =gf_replaceall(ls_dwSyntax, "'", '"')
 
-
-RETURN ls_dwSyntax
+Return ls_dwSyntax
 end function
 
 private function long of_get_json_schema (string as_json, ref string as_columns[], ref string as_types[], ref string as_lens[]);String ls_Json, ls_Type, ls_value, ls_key, ls_len
@@ -549,15 +539,13 @@ ll_ChildCount = lnv_JsonParser.GetChildCount(ll_ArrayItem)
 	
 	ls_key = lnv_JsonParser.GetChildKey(ll_ObjectItem, ll_Row)
  
-	   ll_columna ++
+	 ll_columna ++
 	 as_columns[ll_columna] = ls_key
-	 
-		 
+	 	 
 	  Choose Case lnv_JsonParser.GetItemType(ll_ObjectItem, ls_key)
 		  Case JsonStringItem!, JsonNullItem!
 				ls_Type = "string"
 				ls_len="1033"
-	
 		  Case JsonNumberItem!
 				
 			ld_parse = 	lnv_JsonParser.GetItemDecimal(ll_ObjectItem, ls_key)

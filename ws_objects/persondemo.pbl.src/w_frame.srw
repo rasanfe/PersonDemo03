@@ -219,11 +219,11 @@ CHOOSE CASE as_menu_name
 		str_venfac lstr_venfac
 		OpenSheetWithParm(w_mant_facturas, lstr_venfac, this, 0, Layered!)
 	CASE "m_facturas"
-		OpenSheet(w_facturas, this, 0, Layered!)
+		OpenSheet(w_con_facturas, this, 0, Layered!)
 	CASE "m_sqlasistido"
 		OpenSheet(w_con_sql, this, 0, Layered!)
 	CASE "m_prueba"
-		OpenSheet(w_prueba, this, 0, Layered!)
+		OpenSheet(w_con_prueba, this, 0, Layered!)
 	CASE "m_salir"
 		Close(this)
 		Return

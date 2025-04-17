@@ -9,16 +9,16 @@ end type
 global n_jsongenerator n_jsongenerator
 
 forward prototypes
-public function string of_set_arguments (string as_argnames[], string as_argdatatypes[], any a_values[])
+public function string of_set_arguments (string as_argnames[], string as_argdatatypes[], any aa_values[])
 end prototypes
 
-public function string of_set_arguments (string as_argnames[], string as_argdatatypes[], any a_values[]);String ls_json
+public function string of_set_arguments (string as_argnames[], string as_argdatatypes[], any aa_values[]);String ls_json
 String ls_argname, ls_argdatatype
 Integer li_TotalArguments, li_argument
 Long ll_RootObject, ll_Child
 String ls_valuedatatype
 Any la_value
-Long ll_types, ll_Values
+Long ll_types, lla_values
 //Array List
 Long ll_ChildArray
 String ls_item
@@ -27,73 +27,73 @@ Integer li_TotalArrayList, li_List
   
 li_TotalArguments = UpperBound(as_argnames[])
 ll_types = UpperBound(as_argdatatypes[])
-ll_Values = UpperBound(a_values[])
+lla_values = UpperBound(aa_values[])
 
-If ll_Values <> li_TotalArguments Or ll_Values <> ll_types Or  li_TotalArguments <> ll_types Then
+If lla_values <> li_TotalArguments Or lla_values <> ll_types Or  li_TotalArguments <> ll_types Then
 	gf_mensaje("Error JsonGenerator", "¡El Numero de Párametros no coincide!")
 	Return ""
 End if	
 
 ll_RootObject = CreateJsonObject()
 	
-if ll_RootObject = -1 then 
+If ll_RootObject = -1 Then 
 	gf_mensaje("Error JsonGenerator", "¡Error de Inicio Json!")
-	RETURN ""
-end if
+	Return ""
+End If
 
-FOR li_argument = 1 TO li_TotalArguments 
+For li_argument = 1 To li_TotalArguments 
 	
 	ls_argname = as_argnames[li_argument]
 
 	ls_argdatatype= as_argdatatypes[li_argument]
 	
-	IF isnull(ls_argdatatype) then ls_argdatatype = ""
+	If IsNull(ls_argdatatype) Then ls_argdatatype = ""
 	
-	la_value = a_values[li_argument]
+	la_value = aa_values[li_argument]
 	
 	//Limpio el Nombre de Los Agrumentos Para que sea mas elegante el Json
-	IF gf_iin(left(ls_argname, 4), {"arg_", "adt_", "ada_"}) THEN
-		ls_argname = Mid(ls_argname, 5, len(ls_argname) - 4)
-	ELSE	
-		IF gf_iin(left(ls_argname, 3), {"as_", "ai_", "ad_", "al_"}) THEN
-			ls_argname = Mid(ls_argname, 4, len(ls_argname) - 3)
-		END IF
-	END IF
+	If gf_iin(left(ls_argname, 4), {"arg_", "adt_", "ada_"}) Then
+		ls_argname = Mid(ls_argname, 5, Len(ls_argname) - 4)
+	Else	
+		If gf_iin(Left(ls_argname, 3), {"as_", "ai_", "ad_", "al_"}) Then
+			ls_argname = Mid(ls_argname, 4, Len(ls_argname) - 3)
+		End If
+	End If
 	
-	CHOOSE CASE  lower(ls_argdatatype)
-		CASE ""
+	Choose Case Lower(ls_argdatatype)
+		Case ""
 			ll_Child = AddItemNull (ll_RootObject, ls_argname )	
-		CASE "string",  "char"
-				IF NOT isnull(la_value) THEN //--------------------------------------------------RAMON
+		Case "string",  "char"
+				If Not IsNull(la_value) Then
 					ll_Child = AddItemString(ll_RootObject, ls_argname, la_value)
-				ELSE
+				Else
 					ll_Child = AddItemNull (ll_RootObject, ls_argname )
-				END IF
-		CASE "number", "integer","int", "double", "decimal" ,"dec", "longlong", "long", "real"
-				IF NOT isnull(la_value) THEN 
+				End If
+		Case "number", "integer","int", "double", "decimal" ,"dec", "longlong", "long", "real"
+				If Not IsNull(la_value) Then
 					ll_Child = AddItemNumber(ll_RootObject, ls_argname, la_value)
-				ELSE
+				Else
 					ll_Child = AddItemNull (ll_RootObject, ls_argname )
-				END IF	
-		CASE "datetime"
-				IF NOT isnull(la_value) THEN 
+				End If
+		Case "datetime"
+				If Not IsNull(la_value) Then
 					ll_Child = AddItemDatetime(ll_RootObject, ls_argname, la_value)
-				ELSE
+				Else
 					ll_Child = AddItemNull (ll_RootObject, ls_argname )
-				END IF
-		CASE "date"
-				IF NOT isnull(la_value) THEN 
+				End If
+		Case "date"
+				If Not IsNull(la_value) Then
 					ll_Child = AddItemDate(ll_RootObject, ls_argname, la_value)
-				ELSE
+				Else
 					ll_Child = AddItemNull (ll_RootObject, ls_argname )
-				END IF	
-		CASE "time"
-				IF NOT isnull(la_value) THEN 
+				End If	
+		Case "time"
+				If Not IsNull(la_value) Then 
 					ll_Child = AddItemTime(ll_RootObject, ls_argname, la_value)	
-				ELSE
+				Else
 					ll_Child = AddItemNull (ll_RootObject, ls_argname )
-				END IF	
-		CASE "stringlist",  "decimallist", "numberlist", "datetimelist", "datelist", "timelist"   
+				End If
+		Case "stringlist",  "decimallist", "numberlist", "datetimelist", "datelist", "timelist"   
 							
 			li_TotalArrayList = gf_parsetoarray(string(la_value), ",", ref ls_List[]) 
 			
@@ -104,23 +104,21 @@ FOR li_argument = 1 TO li_TotalArguments
 				ll_child = AddItemString(ll_ChildArray, ls_item)
 			Next
 			
-		 CASE ELSE
+		Case Else
 			gf_mensaje("Error JsonGenerator", "Tipo de dato desconocido: " + ls_argdatatype)
 			Return ""
-	END CHOOSE		
-NEXT
+	End Choose
+Next
 
 // Generar el JSON como string
- ls_Json = GetJsonString()
+ ls_Json =This.GetJsonString()
  
-// Messagebox("ls_Json", ls_Json)
- 
- If isnull(ls_Json) or trim(ls_Json) = "" Then
-	gf_mensaje("Error JsonGenerator", "¡Error Generando Json String!")
+ If isnull(ls_Json) Or trim(ls_Json) = "" Then
+	gf_mensaje("Error JsonGenerator", "¡ Error Generando Json String !")
  End IF
 
  // Retornar el JSON generado
- RETURN ls_Json
+ Return ls_Json
 end function
 
 on n_jsongenerator.create

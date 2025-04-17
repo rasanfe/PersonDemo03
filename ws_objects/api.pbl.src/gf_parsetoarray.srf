@@ -6,8 +6,8 @@ forward prototypes
 global function integer gf_parsetoarray (string as_source, string as_delimiter, ref string as_array[])
 end prototypes
 
-global function integer gf_parsetoarray (string as_source, string as_delimiter, ref string as_array[]);long    ll_DelLen, ll_Pos, ll_Count, ll_Start, ll_Length, ll_null
-string  ls_holder
+global function integer gf_parsetoarray (string as_source, string as_delimiter, ref string as_array[]);Long    ll_DelLen, ll_Pos, ll_Count, ll_Start, ll_Length, ll_null
+String  ls_holder
 
 // Comprobación de nulos.
 IF IsNull(as_source) or IsNull(as_delimiter) Then

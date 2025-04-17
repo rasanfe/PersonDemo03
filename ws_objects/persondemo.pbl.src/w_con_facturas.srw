@@ -1,50 +1,50 @@
-﻿$PBExportHeader$w_facturas.srw
+﻿$PBExportHeader$w_con_facturas.srw
 forward
-global type w_facturas from window
+global type w_con_facturas from window
 end type
-type pb_print_composite from picturebutton within w_facturas
+type pb_print_composite from picturebutton within w_con_facturas
 end type
-type dw_composite from vs_dw_api within w_facturas
+type dw_composite from vs_dw_api within w_con_facturas
 end type
-type pb_print_report from picturebutton within w_facturas
+type pb_print_report from picturebutton within w_con_facturas
 end type
-type rb_3 from radiobutton within w_facturas
+type rb_3 from radiobutton within w_con_facturas
 end type
-type rb_2 from radiobutton within w_facturas
+type rb_2 from radiobutton within w_con_facturas
 end type
-type rb_1 from radiobutton within w_facturas
+type rb_1 from radiobutton within w_con_facturas
 end type
-type st_3 from statictext within w_facturas
+type st_3 from statictext within w_con_facturas
 end type
-type st_2 from statictext within w_facturas
+type st_2 from statictext within w_con_facturas
 end type
-type st_1 from statictext within w_facturas
+type st_1 from statictext within w_con_facturas
 end type
-type cb_consultar from commandbutton within w_facturas
+type cb_consultar from commandbutton within w_con_facturas
 end type
-type sle_department from singlelineedit within w_facturas
+type sle_department from singlelineedit within w_con_facturas
 end type
-type sle_customer from singlelineedit within w_facturas
+type sle_customer from singlelineedit within w_con_facturas
 end type
-type sle_serie from singlelineedit within w_facturas
+type sle_serie from singlelineedit within w_con_facturas
 end type
-type dp_2 from datepicker within w_facturas
+type dp_2 from datepicker within w_con_facturas
 end type
-type dp_1 from datepicker within w_facturas
+type dp_1 from datepicker within w_con_facturas
 end type
-type gb_1 from groupbox within w_facturas
+type gb_1 from groupbox within w_con_facturas
 end type
-type gb_2 from groupbox within w_facturas
+type gb_2 from groupbox within w_con_facturas
 end type
-type gb_3 from groupbox within w_facturas
+type gb_3 from groupbox within w_con_facturas
 end type
-type dw_report from vs_dw_api within w_facturas
+type dw_report from vs_dw_api within w_con_facturas
 end type
-type dw_1 from vs_dw_api within w_facturas
+type dw_1 from vs_dw_api within w_con_facturas
 end type
 end forward
 
-global type w_facturas from window
+global type w_con_facturas from window
 integer width = 5221
 integer height = 2972
 boolean titlebar = true
@@ -75,7 +75,7 @@ gb_3 gb_3
 dw_report dw_report
 dw_1 dw_1
 end type
-global w_facturas w_facturas
+global w_con_facturas w_con_facturas
 
 type prototypes
 //Funcion para tomar el directorio de la aplicacion  -64Bits 
@@ -83,18 +83,18 @@ FUNCTION	uLong	GetModuleFileName ( uLong lhModule, ref string sFileName, ulong n
 end prototypes
 
 forward prototypes
-public function long wf_retrieve_nested (u_dw adw, any a_values[])
+public function long wf_retrieve_nested (u_dw adw, any aa_values[])
 private subroutine wf_set_args (datawindowchild adw, string as_argnames[], string as_argdatatypes[], any aa_argvalues[])
 public function long wf_retrieve (vs_dw_api adw)
-public function long wf_retrieve_composite (u_dw adw, any a_values[])
+public function long wf_retrieve_composite (u_dw adw, any aa_values[])
 end prototypes
 
-public function long wf_retrieve_nested (u_dw adw, any a_values[]);Long ll_RowCount
+public function long wf_retrieve_nested (u_dw adw, any aa_values[]);Long ll_RowCount
 String ls_Json
 Integer li_result
 DataWindowChild dwc_Nested
 String ls_DwProcessing
-String ls_Argnames[], ls_Argdatatypes[], l_values[]
+String ls_Argnames[], ls_Argdatatypes[], la_values[]
 nvo_ds_api ds_aux, ds_report
 string ls_header, ls_objname, ls_ObjectTemp, ls_Nested, ls_library, ls_libraryTemp
 String ls_syntax_original, ls_syntax_new, ErrorBuffer, ls_data_new, ls_data_original
@@ -114,7 +114,7 @@ ls_Nested ="dw_cabecera"
 //Retrieve Argument for Nested report
 ls_Argnames[1]="arg_empresa"
 ls_Argdatatypes[1]="string"
-l_values[1] = "1" 
+la_values[1] = "1" 
 
 If gb_isPBIDE Then
 	ls_library = gf_replaceall(ls_library, gs_dir+"\", "")
@@ -134,7 +134,7 @@ If ls_data_original = "data() " Then
  End If
  
 //Retrieve Nested
-ds_aux.of_retrieve(l_values[])
+ds_aux.of_retrieve(la_values[])
 
 //Get String With Data
 ls_data_new = ds_aux.Describe("DataWindow.Syntax.Data") 
@@ -168,7 +168,7 @@ destroy ds_aux
 ds_report = Create nvo_ds_api
 ds_report.DataObject = adw.DataObject
 
-ds_report.of_retrieve(a_values[])
+ds_report.of_retrieve(aa_values[])
 ls_json = ds_report.ExportJson()
 Destroy ds_report
 
@@ -194,7 +194,7 @@ If ll_RowCount > 0 Then
 		Return -1
 	End IF
 		
-	wf_set_args(dwc_Nested, ls_Argnames[], ls_Argdatatypes[], l_values[])
+	wf_set_args(dwc_Nested, ls_Argnames[], ls_Argdatatypes[], la_values[])
 	adw.groupcalc()
 
 	If ls_DwProcessing <> "5" Then adw.Modify ("Datawindow.Processing="+ls_DwProcessing)
@@ -332,7 +332,7 @@ end subroutine
 
 public function long wf_retrieve (vs_dw_api adw);string ls_empresa, ls_serie,  ls_cli1, ls_cli2, ls_situacion, ls_anyo, ls_obra
 Datetime ldt_fecha1, ldt_fecha2
-any a_values[]
+any aa_values[]
 Long ll_RowCount
 
 ls_empresa="1"
@@ -377,23 +377,23 @@ END IF
 
 adw.setredraw(false)		
 
-a_values[1]  = ls_empresa
-a_values[2]  = ls_anyo
-a_values[3]  = ls_serie
-a_values[4]  = ldt_fecha1
-a_values[5]  = ldt_fecha2
-a_values[6]  = ls_cli1
-a_values[7]  = ls_cli2
-a_values[8]  = ls_obra
-a_values[9]  = ls_situacion
+aa_values[1]  = ls_empresa
+aa_values[2]  = ls_anyo
+aa_values[3]  = ls_serie
+aa_values[4]  = ldt_fecha1
+aa_values[5]  = ldt_fecha2
+aa_values[6]  = ls_cli1
+aa_values[7]  = ls_cli2
+aa_values[8]  = ls_obra
+aa_values[9]  = ls_situacion
 
 Choose Case adw.Dataobject
 	Case "report_composite"
-		ll_RowCount = wf_retrieve_composite(adw, a_values[])
+		ll_RowCount = wf_retrieve_composite(adw, aa_values[])
 	Case "report_con_listado_con_cabecera"
-		ll_RowCount = wf_retrieve_nested(adw, a_values[])
+		ll_RowCount = wf_retrieve_nested(adw, aa_values[])
 	Case Else
-		ll_RowCount = adw.of_Retrieve(a_values[])
+		ll_RowCount = adw.of_Retrieve(aa_values[])
 End Choose
 
 
@@ -402,10 +402,10 @@ adw.setredraw(true)
 Return ll_RowCount
 end function
 
-public function long wf_retrieve_composite (u_dw adw, any a_values[]);Long ll_RowCount
+public function long wf_retrieve_composite (u_dw adw, any aa_values[]);Long ll_RowCount
 String ls_Json1, ls_Json2
 DataWindowChild dwc_1, dwc_2
-String ls_Argnames[], ls_Argdatatypes[], l_values[]
+String ls_Argnames[], ls_Argdatatypes[], la_values[]
 nvo_ds_api ds_1, ds_2
 string ls_objname1, ls_objname2
 Integer li_result
@@ -421,10 +421,10 @@ ds_1.DataObject =ls_objname1
 //Retrieve Argument for Nested report 1
 ls_Argnames[1]="arg_empresa"
 ls_Argdatatypes[1]="string"
-l_values[1] = "1" 
+la_values[1] = "1" 
 
 //Retrieve Nested
-ds_1.of_retrieve(l_values[])
+ds_1.of_retrieve(la_values[])
 ls_json1 = ds_1.ExportJson()
 Destroy ds_1
 
@@ -434,7 +434,7 @@ ls_objname2 ="report_con_listado_sin_cabecera"
 ds_2= Create nvo_ds_api
 ds_2.DataObject = ls_objname2
 
-ds_2.of_retrieve(a_values[])
+ds_2.of_retrieve(aa_values[])
 ls_json2 = ds_2.ExportJson()
 Destroy ds_2
 
@@ -450,7 +450,7 @@ End IF
 
 dwc_1.Reset()
 ll_RowCount = dwc_1.ImportJson(ls_json1)
-wf_set_args(dwc_1, ls_Argnames[], ls_Argdatatypes[], l_values[])
+wf_set_args(dwc_1, ls_Argnames[], ls_Argdatatypes[], la_values[])
 
 li_result =adw.GetChild("dw_report", dwc_2)
 
@@ -461,7 +461,7 @@ End IF
 
 dwc_2.Reset()
 ll_RowCount = dwc_2.ImportJson(ls_json2)
-wf_set_args(dwc_1, ls_Argnames[], ls_Argdatatypes[], l_values[])
+wf_set_args(dwc_1, ls_Argnames[], ls_Argdatatypes[], la_values[])
 
 
 adw.groupcalc()
@@ -471,7 +471,7 @@ adw.Event Retrieveend(ll_RowCount)
 Return ll_RowCount
 end function
 
-on w_facturas.create
+on w_con_facturas.create
 this.pb_print_composite=create pb_print_composite
 this.dw_composite=create dw_composite
 this.pb_print_report=create pb_print_report
@@ -514,7 +514,7 @@ this.dw_report,&
 this.dw_1}
 end on
 
-on w_facturas.destroy
+on w_con_facturas.destroy
 destroy(this.pb_print_composite)
 destroy(this.dw_composite)
 destroy(this.pb_print_report)
@@ -561,7 +561,7 @@ cb_consultar.x = pb_print_report.x - cb_consultar.width - 25
 
 end event
 
-type pb_print_composite from picturebutton within w_facturas
+type pb_print_composite from picturebutton within w_con_facturas
 integer x = 5010
 integer y = 164
 integer width = 137
@@ -588,7 +588,7 @@ dw_composite.of_print()
 
 end event
 
-type dw_composite from vs_dw_api within w_facturas
+type dw_composite from vs_dw_api within w_con_facturas
 boolean visible = false
 integer x = 50
 integer y = 340
@@ -600,7 +600,7 @@ boolean vscrollbar = true
 boolean ib_logo = false
 end type
 
-type pb_print_report from picturebutton within w_facturas
+type pb_print_report from picturebutton within w_con_facturas
 integer x = 4869
 integer y = 164
 integer width = 137
@@ -626,7 +626,7 @@ dw_report.of_print()
 
 end event
 
-type rb_3 from radiobutton within w_facturas
+type rb_3 from radiobutton within w_con_facturas
 integer x = 2377
 integer y = 252
 integer width = 402
@@ -642,7 +642,7 @@ string text = "Todas"
 boolean checked = true
 end type
 
-type rb_2 from radiobutton within w_facturas
+type rb_2 from radiobutton within w_con_facturas
 integer x = 2377
 integer y = 180
 integer width = 480
@@ -657,7 +657,7 @@ long backcolor = 67108864
 string text = "Contabilizadas"
 end type
 
-type rb_1 from radiobutton within w_facturas
+type rb_1 from radiobutton within w_con_facturas
 integer x = 2377
 integer y = 104
 integer width = 462
@@ -672,7 +672,7 @@ long backcolor = 67108864
 string text = "No Contabilizadas"
 end type
 
-type st_3 from statictext within w_facturas
+type st_3 from statictext within w_con_facturas
 integer x = 1838
 integer y = 136
 integer width = 128
@@ -688,7 +688,7 @@ string text = "Obra"
 boolean focusrectangle = false
 end type
 
-type st_2 from statictext within w_facturas
+type st_2 from statictext within w_con_facturas
 integer x = 1298
 integer y = 140
 integer width = 201
@@ -705,7 +705,7 @@ alignment alignment = right!
 boolean focusrectangle = false
 end type
 
-type st_1 from statictext within w_facturas
+type st_1 from statictext within w_con_facturas
 integer x = 946
 integer y = 140
 integer width = 128
@@ -721,7 +721,7 @@ string text = "Serie"
 boolean focusrectangle = false
 end type
 
-type cb_consultar from commandbutton within w_facturas
+type cb_consultar from commandbutton within w_con_facturas
 integer x = 4457
 integer y = 164
 integer width = 402
@@ -741,7 +741,7 @@ dw_report.visible=false
 dw_composite.visible=false
 end event
 
-type sle_department from singlelineedit within w_facturas
+type sle_department from singlelineedit within w_con_facturas
 integer x = 1993
 integer y = 120
 integer width = 261
@@ -756,7 +756,7 @@ long textcolor = 33554432
 borderstyle borderstyle = stylelowered!
 end type
 
-type sle_customer from singlelineedit within w_facturas
+type sle_customer from singlelineedit within w_con_facturas
 integer x = 1541
 integer y = 120
 integer width = 261
@@ -771,7 +771,7 @@ long textcolor = 33554432
 borderstyle borderstyle = stylelowered!
 end type
 
-type sle_serie from singlelineedit within w_facturas
+type sle_serie from singlelineedit within w_con_facturas
 integer x = 1088
 integer y = 120
 integer width = 137
@@ -787,7 +787,7 @@ string text = "1"
 borderstyle borderstyle = stylelowered!
 end type
 
-type dp_2 from datepicker within w_facturas
+type dp_2 from datepicker within w_con_facturas
 integer x = 485
 integer y = 120
 integer width = 402
@@ -799,7 +799,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-14"), Time("08:26:41.000000"))
+datetime value = DateTime(Date("2025-04-17"), Time("08:34:30.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
@@ -809,7 +809,7 @@ boolean todaysection = true
 boolean todaycircle = true
 end type
 
-type dp_1 from datepicker within w_facturas
+type dp_1 from datepicker within w_con_facturas
 integer x = 69
 integer y = 120
 integer width = 402
@@ -821,7 +821,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-14"), Time("08:26:41.000000"))
+datetime value = DateTime(Date("2025-04-17"), Time("08:34:30.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
@@ -831,7 +831,7 @@ boolean todaysection = true
 boolean todaycircle = true
 end type
 
-type gb_1 from groupbox within w_facturas
+type gb_1 from groupbox within w_con_facturas
 integer x = 32
 integer y = 12
 integer width = 873
@@ -847,7 +847,7 @@ long backcolor = 67108864
 string text = "Fechas"
 end type
 
-type gb_2 from groupbox within w_facturas
+type gb_2 from groupbox within w_con_facturas
 integer x = 2313
 integer y = 16
 integer width = 558
@@ -863,7 +863,7 @@ long backcolor = 67108864
 string text = "Situación"
 end type
 
-type gb_3 from groupbox within w_facturas
+type gb_3 from groupbox within w_con_facturas
 integer x = 914
 integer y = 16
 integer width = 1385
@@ -879,7 +879,7 @@ long backcolor = 67108864
 string text = "Critérios"
 end type
 
-type dw_report from vs_dw_api within w_facturas
+type dw_report from vs_dw_api within w_con_facturas
 boolean visible = false
 integer x = 50
 integer y = 340
@@ -891,7 +891,7 @@ boolean vscrollbar = true
 boolean ib_logo = false
 end type
 
-type dw_1 from vs_dw_api within w_facturas
+type dw_1 from vs_dw_api within w_con_facturas
 integer x = 50
 integer y = 340
 integer width = 5115
