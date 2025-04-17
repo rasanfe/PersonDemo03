@@ -55,7 +55,7 @@ FUNCTION	uLong	GetModuleFileName ( uLong lhModule, ref string sFileName, ulong n
 end prototypes
 
 type variables
-//coment
+
 end variables
 
 on persondemo.create
