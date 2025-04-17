@@ -191,7 +191,11 @@ wf_set_colors()
 //Obtengo la Versión de PowerBuilder y el Build
 wf_pb_version()
 
-ls_fichero_aplicacion = "./persondemo.exe"
+If isPowerclientapp() Then
+	ls_fichero_aplicacion = "./persondemo2025.exe"
+Else
+	ls_fichero_aplicacion = "./persondemo.exe"
+End If
 	
 in_osver.of_GetFileVersionInfo(ls_fichero_aplicacion)
 	
