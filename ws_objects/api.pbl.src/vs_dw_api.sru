@@ -251,7 +251,7 @@ End If
 of_setarguments(is_dwargnames[], is_dwargdatatypes[], aa_values[])
 	
 //13- Actualizamos Banderas y reseteamos variables	
-ResetUpdate()
+This.ResetUpdate()
 ia_values[] = aa_values[] //Guardo los valores
 aa_values[] = la_Null[]
 is_dwargnames[] = la_Null[]
