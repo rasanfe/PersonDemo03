@@ -255,6 +255,10 @@ end on
 event open;Any la_values[]
 str_venfac lstr_venfac
 
+If IsValid(w_frame) Then
+	w_frame.iuo_web.Post of_set_visible(False)
+End If
+
 lstr_venfac =  Message.PowerObjectParm
 
 If isValid(lstr_venfac)  Then
@@ -327,6 +331,17 @@ st_1.y = 152
 cb_insert.y = 140
 cb_delete.y=140
 cb_update.y = 140
+end event
+
+event close;Long ll_OpenWindows
+
+If IsValid(w_frame) Then
+	ll_OpenWindows = gf_ventanas_abiertas(w_frame)
+	
+	If ll_OpenWindows = 1 Then
+		w_frame.iuo_web.Post of_set_visible(True)
+	End If
+End If
 end event
 
 type st_registros from statictext within w_mant_facturas

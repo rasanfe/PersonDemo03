@@ -162,7 +162,10 @@ destroy(this.st_tablerows)
 destroy(this.pb_disquete)
 end on
 
-event open;wf_start()
+event open;If IsValid(w_frame) Then
+	w_frame.iuo_web.Post of_set_visible(False)
+End If
+wf_start()
 wf_reset()
 
 
@@ -181,6 +184,17 @@ st_registros.y = dw_new.Height + dw_new.y + 10
 
 
 
+end event
+
+event close;Long ll_OpenWindows
+
+If IsValid(w_frame) Then
+	ll_OpenWindows = gf_ventanas_abiertas(w_frame)
+	
+	If ll_OpenWindows = 1 Then
+		w_frame.iuo_web.Post of_set_visible(True)
+	End If
+End If
 end event
 
 type dw_new from vs_dw_api within w_con_sql

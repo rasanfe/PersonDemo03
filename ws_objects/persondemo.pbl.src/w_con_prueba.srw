@@ -49,6 +49,22 @@ dw_1.Height = Height -  560
 
 end event
 
+event close;Long ll_OpenWindows
+
+If IsValid(w_frame) Then
+	ll_OpenWindows = gf_ventanas_abiertas(w_frame)
+	
+	If ll_OpenWindows = 1 Then
+		w_frame.iuo_web.Post of_set_visible(True)
+	End If
+End If
+end event
+
+event open;If IsValid(w_frame) Then
+	w_frame.iuo_web.Post of_set_visible(False)
+End If
+end event
+
 type cb_consultar from commandbutton within w_con_prueba
 integer x = 101
 integer y = 192

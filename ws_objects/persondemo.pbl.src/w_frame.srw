@@ -58,6 +58,9 @@ Private Boolean ib_expand=TRUE
  Public Constant Integer ii_SmallButton = 6
  Public Constant Integer ii_ComboBox = 7
  Public Constant Integer ii_CheckBox = 8 
+ 
+  //WebBrowser de Fondo MDI
+ u_web_background iuo_web
 end variables
 
 forward prototypes
@@ -280,9 +283,12 @@ rbb_main.importfromxmlfile(ls_ribbonName)
 
 rbb_main.of_register(this)
 
+//Cargamos Fondo MDI
+This.OpenUserObject(iuo_web, "u_web_background")
+iuo_web.Move(0, This.rbb_main.height +10)
+iuo_web.Resize(This.WorkSpaceWidth(), This.WorkSpaceHeight() -  This.rbb_main.height -75)
+
 Timer(1)
-
-
 end event
 
 event timer;String ls_hora
@@ -293,6 +299,7 @@ ls_hora = String(ldt_hora, "dd/mm/yyyy  hh:mm:ss")
 
 This.SetMicroHelp (ls_hora + "  ")
 
+
 end event
 
 event resize;rbb_main.width = this.workspaceWidth()
@@ -302,6 +309,11 @@ mdi_1.x = this.workspacex()
 mdi_1.y = this.workspacey()  +  rbb_main.height 		// + 4									 
 mdi_1.height = this.workspaceHeight() - rbb_main.height  - 50	
 mdi_1.width  = this.workspaceWidth() 
+
+If isValid(iuo_web) Then
+	iuo_web.Move(0, This.rbb_main.height +10)
+	iuo_web.Resize(This.WorkSpaceWidth(), This.WorkSpaceHeight() -  This.rbb_main.height -75)
+End If
 end event
 
 type mdi_1 from mdiclient within w_frame

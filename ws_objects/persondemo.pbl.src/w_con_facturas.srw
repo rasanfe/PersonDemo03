@@ -537,7 +537,11 @@ destroy(this.dw_report)
 destroy(this.dw_1)
 end on
 
-event open;dp_1.value=datetime("01-04-2025")
+event open;If IsValid(w_frame) Then
+	w_frame.iuo_web.Post of_set_visible(False)
+End If
+
+dp_1.value=datetime("01-04-2025")
 dp_2.value=datetime("22-04-2025")
 
 
@@ -559,6 +563,17 @@ cb_consultar.x = pb_print_report.x - cb_consultar.width - 25
 
 
 
+end event
+
+event close;Long ll_OpenWindows
+
+If IsValid(w_frame) Then
+	ll_OpenWindows = gf_ventanas_abiertas(w_frame)
+	
+	If ll_OpenWindows = 1 Then
+		w_frame.iuo_web.Post of_set_visible(True)
+	End If
+End If
 end event
 
 type pb_print_composite from picturebutton within w_con_facturas
@@ -799,7 +814,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-17"), Time("08:34:30.000000"))
+datetime value = DateTime(Date("2025-07-22"), Time("10:55:58.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
@@ -821,7 +836,7 @@ datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
 date maxdate = Date("2025-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-04-17"), Time("08:34:30.000000"))
+datetime value = DateTime(Date("2025-07-22"), Time("10:55:58.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!

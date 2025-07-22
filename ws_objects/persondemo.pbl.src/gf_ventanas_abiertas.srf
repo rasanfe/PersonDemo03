@@ -1,0 +1,24 @@
+﻿$PBExportHeader$gf_ventanas_abiertas.srf
+global type gf_ventanas_abiertas from function_object
+end type
+
+forward prototypes
+global function integer gf_ventanas_abiertas (w_frame aw_main)
+end prototypes
+
+global function integer gf_ventanas_abiertas (w_frame aw_main);Integer li_Count
+window lw_Sheet
+
+/* devuelve número de 'hojas' abiertas (hoja es ventana abierta con opensheet )*/
+lw_Sheet = aw_main.GetFirstSheet ()
+
+if IsValid (lw_Sheet) then
+	Do
+		li_Count += 1
+		lw_Sheet = aw_main.GetNextSheet (lw_Sheet)
+	Loop While IsValid (lw_Sheet)
+end if
+
+return li_count
+end function
+
