@@ -101,6 +101,7 @@ ls_html = "<!DOCTYPE html>" + "~r~n"+&
 				"      text-align: center;" + "~r~n"+&
 				"      padding-top: 100px;" + "~r~n"+&
 				"      transition: background-color 0.5s ease;" + "~r~n"+&
+				"      overflow: hidden;" + "~r~n"+&
 				"    }" + "~r~n"+&
 				""+"~r~n"+&
 				"    .mensaje {" + "~r~n"+&
