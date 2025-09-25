@@ -369,7 +369,9 @@ End IF
 If isvalid(w_con_facturas) Then w_con_facturas.dw_1.TriggerEvent(Constructor!)
 If isvalid(w_con_sql) Then w_con_sql.dw_new.TriggerEvent(Constructor!)
 If IsValid(w_frame) Then 	w_frame.iuo_web.TriggerEvent(Constructor!)
-
+If IsValid(w_dashboard) Then 	
+	w_dashboard.wb_1.NavigateToString(w_dashboard.in_dash.of_get_html())
+End IF
 
 
 

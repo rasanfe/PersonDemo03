@@ -5,6 +5,7 @@
       <ApplicationMenu>
         <Master>
           <Item Text="Configuración" PictureName="AccountSettingsBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_setup" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
+          <Item Text="Dashboard" PictureName="AppBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_dash" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
           <Item Text="Mant Facturas" PictureName="DesignBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_mant_facturas" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
           <Item Text="Listado Facturas" PictureName="OrdersBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_facturas" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
             <Item Text="Sql Asistido" PictureName="ZoomInBig!" Checked="false" Enabled="true" Shortcut="" Tag="m_sqlasistido" Type="0" Visible="true"  Clicked="ue_MasterMenuClicked" Selected="ue_MasterMenuSelected"/>
@@ -21,6 +22,7 @@
       <Category Text="Inicio" Enabled="true" Tag="m_home_category" Visible="true">
         <Panel Text="Inicio" PictureName="BoardSmall!" Enabled="true" Tag="m_Inicio_panel" Visible="true">
           <LargeButton Text="Configuración" Tag="m_setup" PictureName="AccountSettingsBig!" Enabled="true" Visible="true" Clicked="ue_LargeButtonClicked"/>
+           <LargeButton Text="Dashboard" Tag="m_dash" PictureName="AppBig!" Enabled="true" Visible="true" Clicked="ue_LargeButtonClicked"/>
           <LargeButton Text="Mant Facturas" PictureName="DesignBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Listado Facturas" PowerTipDescription="" Tag="m_mant_facturas" Visible="true" Clicked="ue_LargeButtonClicked"/>
           <LargeButton Text="Listado Facturas" PictureName="OrdersBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Listado Facturas" PowerTipDescription="" Tag="m_facturas" Visible="true" Clicked="ue_LargeButtonClicked"/>
            <LargeButton Text="Sql Asistido" PictureName="ZoomInBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Sql Asistido" PowerTipDescription="" Tag="m_sqlasistido" Visible="true" Clicked="ue_LargeButtonClicked"/>

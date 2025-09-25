@@ -29,4 +29,12 @@
 	"u_statictext_raised": {
 		"drawing":false
 	}
+	,
+	"u_web_background": {
+		"drawing":false
+	}
+	,
+	"w_dashboard": {
+		"drawing":false
+	}
 }

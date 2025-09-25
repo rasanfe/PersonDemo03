@@ -66,6 +66,7 @@ end variables
 forward prototypes
 private subroutine wf_open (string as_menu_name)
 public subroutine wf_window_location ()
+public subroutine wf_logo (boolean ab_sino)
 end prototypes
 
 event ue_rbm_largebuttonclicked (long itemhandle);
@@ -218,6 +219,8 @@ CHOOSE CASE as_menu_name
 		LockWorkStation()
 	CASE "m_setup"	
 		Open(w_setup)	
+	CASE "m_dash"	
+	 	OpenSheetWithParm(w_dashboard, this, this, 0, Layered!)
 	CASE "m_mant_facturas"
 		str_venfac lstr_venfac
 		OpenSheetWithParm(w_mant_facturas, lstr_venfac, this, 0, Layered!)
@@ -255,6 +258,19 @@ If isvalid(lw_win) then
 end if	
 end subroutine
 
+public subroutine wf_logo (boolean ab_sino);//Cargamos Fondo MDI
+If ab_sino = True Then
+	If Not isvalid(iuo_web)Then
+		This.OpenUserObject(iuo_web, "u_web_background")
+		iuo_web.Move(0, This.rbb_main.height +10)
+		iuo_web.Resize(This.WorkSpaceWidth(), This.WorkSpaceHeight() -  This.rbb_main.height -75)
+	End IF
+Else
+	If isvalid(iuo_web) Then CloseUserObject(iuo_web)
+End if
+
+end subroutine
+
 on w_frame.create
 if this.MenuName = "m_menu" then this.MenuID = create m_menu
 this.mdi_1=create mdi_1
@@ -284,9 +300,7 @@ rbb_main.importfromxmlfile(ls_ribbonName)
 rbb_main.of_register(this)
 
 //Cargamos Fondo MDI
-This.OpenUserObject(iuo_web, "u_web_background")
-iuo_web.Move(0, This.rbb_main.height +10)
-iuo_web.Resize(This.WorkSpaceWidth(), This.WorkSpaceHeight() -  This.rbb_main.height -75)
+wf_logo(true)
 
 Timer(1)
 end event
