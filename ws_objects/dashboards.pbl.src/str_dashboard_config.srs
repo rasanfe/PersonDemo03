@@ -1,0 +1,6 @@
+﻿$PBExportHeader$str_dashboard_config.srs
+global type str_dashboard_config from structure
+	str_dashboard_card	ast_cards[]
+	str_dashboard_chart	ast_charts[]
+end type
+
