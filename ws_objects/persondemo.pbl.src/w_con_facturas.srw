@@ -541,8 +541,8 @@ event open;If IsValid(w_frame) Then
 	w_frame.iuo_web.Post of_set_visible(False)
 End If
 
-dp_1.value=datetime("01-04-2025")
-dp_2.value=datetime("22-04-2025")
+dp_1.value=datetime("01-02-2026")
+dp_2.value=datetime("28-02-2026")
 
 
 
@@ -812,9 +812,9 @@ boolean border = true
 borderstyle borderstyle = stylelowered!
 datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
-date maxdate = Date("2025-12-31")
+date maxdate = Date("2026-12-31")
 date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-07-22"), Time("10:55:58.000000"))
+datetime value = DateTime(Date("2026-07-22"), Time("10:55:58.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
@@ -834,9 +834,9 @@ boolean border = true
 borderstyle borderstyle = stylelowered!
 datetimeformat format = dtfcustom!
 string customformat = "dd-MM-yyyy"
-date maxdate = Date("2025-12-31")
-date mindate = Date("2024-01-01")
-datetime value = DateTime(Date("2025-07-22"), Time("10:55:58.000000"))
+date maxdate = Date("2026-12-31")
+date mindate = Date("2025-01-01")
+datetime value = DateTime(Date("2026-01-24"), Time("10:55:58.000000"))
 integer textsize = -10
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!

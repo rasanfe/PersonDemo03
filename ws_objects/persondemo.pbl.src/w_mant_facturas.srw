@@ -508,7 +508,7 @@ String ls_cliente, ls_codpago
 
 //Insertamos Clave Primaria
 is_empresa="1"
-is_anyo="2025"
+is_anyo="2026"
 is_serie="1"
 is_factura=gf_nueva_factura(is_empresa, is_anyo, is_serie) 
 
@@ -810,7 +810,7 @@ ll_Row = dw_1.InsertRow(0)
 
 //Insertamos Clave Primaria
 is_empresa="1"
-is_anyo="2025"
+is_anyo="2026"
 is_serie="1"
 is_factura=gf_nueva_factura(is_empresa, is_anyo, is_serie) 
 
