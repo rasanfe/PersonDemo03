@@ -1,0 +1,2 @@
+SELECT empresa, tipoter, codigo, nombre, razon, cif, pais
+FROM genter where nombre like '%prueba%'

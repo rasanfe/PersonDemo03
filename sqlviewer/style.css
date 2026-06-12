@@ -1,0 +1,552 @@
+/* ============================================================
+   Visor SQL - estilo sobrio SQL Server Management Studio (SSMS)
+   Web plana (sin frameworks). CodeMirror 5 (editor) + Tabulator (rejilla).
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: 12px;
+  color: #1e1e1e;
+  background: #ffffff;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 0 10px;
+  background: #f0f0f0;
+}
+
+/* -------- Barra de herramientas -------- */
+.toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #c8c8c8;
+}
+
+/* Tema de empresa: PB lo inyecta con window.setTheme('#rrggbb') según el color
+   de la empresa activa (1 azul, 2 verde, 3 azul marino, 4 naranja...). Afecta a
+   botones, slider de zoom y checkboxes. */
+:root { --tema: #2b6cb0; }
+
+input[type="checkbox"],
+input[type="range"] { accent-color: var(--tema); }
+
+.btn {
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+  padding: 3px 12px;
+  border: 1px solid var(--tema);
+  background: #fdfdfd;
+  color: var(--tema);
+  cursor: pointer;
+  border-radius: 2px;
+}
+.btn:hover:not(:disabled) { background: color-mix(in srgb, var(--tema) 12%, white); }
+.btn:active:not(:disabled) { background: color-mix(in srgb, var(--tema) 22%, white); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+
+.btn-run { background: var(--tema); border-color: var(--tema); color: #fff; font-weight: 600; }
+.btn-run:hover:not(:disabled) { filter: brightness(0.93); background: var(--tema); }
+.btn-mini { padding: 3px 8px; font-size: 11px; }
+
+.status {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  padding-right: 6px;
+  color: #444;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.status.error { color: #b00020; font-weight: 600; }
+
+/* -------- Editor (CodeMirror) -------- */
+.editor-pane {
+  flex: 0 0 auto;
+  height: 200px;
+  overflow: hidden;
+  border-bottom: 1px solid #d8d8d8;
+}
+
+/* Control de zoom del editor (en la barra, a la izquierda) */
+.zoom-tool {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  background: #fdfdfd;
+  border: 1px solid #c4c4c4;
+  border-radius: 2px;
+}
+.zoom-tool input[type="range"] { width: 80px; cursor: pointer; }
+.zoom-tool .zbtn {
+  border: none;
+  background: transparent;
+  color: #444;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 2px;
+  line-height: 1;
+}
+.zoom-tool .zbtn:hover { color: #000; }
+
+/* -------- Botones de edición (modo asistido, solo si editable) -------- */
+.edit-tools { display: none; align-items: center; gap: 6px; }
+#app.editable .edit-tools { display: inline-flex; }
+.btn-save { background: var(--tema); border-color: var(--tema); color: #fff; font-weight: 600; }
+.btn-save:hover:not(:disabled) { filter: brightness(0.93); background: var(--tema); border-color: var(--tema); }
+
+/* -------- Cuerpo: sidebar (tablas/campos) + main (editor+grid) -------- */
+.body { flex: 1 1 auto; min-height: 0; display: flex; }
+.main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+
+.sidebar {
+  flex: 0 0 230px;
+  display: none;
+  flex-direction: column;
+  border-right: 1px solid #cfcfcf;
+  background: #fafafa;
+  overflow: hidden;
+}
+#app.asistido .sidebar { display: flex; }
+#app.asistido.sidebar-off .sidebar { display: none; }
+
+/* Botón de toolbar para ocultar/mostrar el sidebar (solo modo asistido) */
+#btnSidebar { display: none; }
+#app.asistido #btnSidebar { display: inline-block; }
+
+/* Divisor vertical para regular el ancho del sidebar (como .divider del editor) */
+.vdivider {
+  flex: 0 0 5px;
+  background: #e6e6e6;
+  border-left: 1px solid #cfcfcf;
+  border-right: 1px solid #cfcfcf;
+  cursor: col-resize;
+  display: none;
+}
+.vdivider:hover { background: #bcd2ee; }
+
+/* Rayita guía durante el arrastre de los divisores: marca dónde quedará el
+   corte; el redimensionado real se aplica al soltar (evita reflows pesados). */
+.drag-ghost {
+  position: fixed;
+  z-index: 999;
+  background: var(--tema);
+  opacity: 0.55;
+  pointer-events: none;
+  display: none;
+}
+#app.asistido .vdivider { display: block; }
+#app.asistido.sidebar-off .vdivider { display: none; }
+
+.panel { display: flex; flex-direction: column; min-height: 0; }
+.panel-tablas { flex: 1 1 50%; border-bottom: 1px solid #d6d6d6; }
+.panel-campos { flex: 1 1 50%; }
+.panel-h {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  font-weight: 600;
+  font-size: 12px;
+  background: #eaeaea;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.panel-h-sub { font-weight: 400; color: #2b6cb0; }
+.panel-search {
+  flex: 0 0 auto;
+  margin: 4px 6px;
+  padding: 2px 6px;
+  border: 1px solid #cfcfcf;
+  border-radius: 2px;
+  font-size: 12px;
+}
+.panel-list { list-style: none; overflow: auto; flex: 1 1 auto; padding: 2px 0; margin: 0; }
+.panel-list li { padding: 3px 10px; cursor: pointer; font-size: 12px; white-space: nowrap; }
+.panel-tablas .panel-list li:hover { background: #eef4fc; }
+.panel-list li.sel { background: #cfe3fb; }
+/* Fila bajo el cursor de teclado (type-ahead / flechas): mismo azul que la
+   selección, con franja izquierda. !important para ganar a la regla :hover. */
+.panel-list li.kbd-cur,
+.panel-tablas .panel-list li.kbd-cur:hover {
+  background: #cfe3fb !important;
+  box-shadow: inset 3px 0 0 #1f5fa8;
+}
+.panel-list li.campo-msg { color: #999; font-style: italic; cursor: default; }
+.campo-todos {
+  flex: 0 0 auto;
+  display: block;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-bottom: 1px dashed #ddd;
+}
+.campo-item { display: flex; align-items: center; gap: 6px; cursor: default; }
+.campo-item .pk {
+  margin-left: auto;
+  color: #b8860b;
+  font-size: 9px;
+  font-weight: 700;
+  border: 1px solid #e3c98a;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+
+.CodeMirror {
+  height: 100%;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.CodeMirror-gutters { background: #f5f5f5; border-right: 1px solid #e2e2e2; }
+.CodeMirror-linenumber { color: #2b91af; }
+.CodeMirror-cursor { border-left: 1px solid #000; }
+
+/* Resaltado SSMS */
+.cm-s-default .cm-keyword     { color: #0000ff; font-weight: 500; }
+.cm-s-default .cm-builtin     { color: #0000ff; }
+.cm-s-default .cm-type        { color: #2b91af; }
+.cm-s-default .cm-def         { color: #000000; }
+.cm-s-default .cm-variable    { color: #000000; }
+.cm-s-default .cm-variable-2  { color: #000000; }
+.cm-s-default .cm-variable-3  { color: #2b91af; }
+.cm-s-default .cm-string      { color: #a31515; }
+.cm-s-default .cm-string-2    { color: #a31515; }
+.cm-s-default .cm-comment     { color: #008000; font-style: italic; }
+.cm-s-default .cm-number      { color: #098658; }
+.cm-s-default .cm-operator    { color: #555555; }
+.cm-s-default .cm-bracket     { color: #555555; }
+.cm-s-default .cm-punctuation { color: #555555; }
+.cm-s-default .cm-meta        { color: #0000ff; }
+
+/* -------- Divisor arrastrable -------- */
+.divider {
+  flex: 0 0 auto;
+  height: 5px;
+  background: #e6e6e6;
+  border-top: 1px solid #cfcfcf;
+  border-bottom: 1px solid #cfcfcf;
+  cursor: row-resize;
+}
+.divider:hover { background: #bcd2ee; }
+
+/* -------- Paneles maximizar/colapsar -------- */
+#app.max-editor .divider,
+#app.max-editor .results { display: none; }
+#app.max-editor .editor-pane { flex: 1 1 auto; height: auto !important; }
+
+#app.max-results .editor-pane,
+#app.max-results .divider { display: none; }
+#app.max-results .results { flex: 1 1 auto; }
+
+/* -------- Resultados -------- */
+.results {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  background: #ffffff;
+}
+#grid { width: 100%; height: 100%; }
+
+.results-msg {
+  position: absolute;
+  top: 0; left: 0;
+  padding: 16px;
+  color: #777;
+  font-style: italic;
+}
+.results-msg.error {
+  color: #b00020;
+  font-style: normal;
+  font-family: Consolas, "Courier New", monospace;
+  white-space: pre-wrap;
+}
+/* Cuando hay tabla, ocultar el mensaje */
+.results.has-data .results-msg { display: none; }
+.results:not(.has-data) #grid { display: none; }
+/* Sin resultados: logo PersonDemo como marca de agua de fondo (igual que
+   u_web_background: centrado y opacidad 0.1). Pseudo-elemento para la opacidad. */
+.results:not(.has-data)::before {
+  content: "";
+  position: absolute;
+  inset: 10%;                 /* deja el logo a ~80% del área, centrado */
+  background: url("https://www.rsrsystem.com/imagenes/person_demo_logo.png") center / contain no-repeat;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* -------- Tabulator: tema sobrio SSMS -------- */
+.tabulator {
+  border: none;
+  background: #ffffff;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: 12px;
+}
+.tabulator .tabulator-header {
+  background: #eaeaea;
+  border-bottom: 1px solid #cdcdcd;
+  color: #333;
+  font-weight: 600;
+}
+.tabulator .tabulator-header .tabulator-col {
+  background: #eaeaea;
+  border-right: 1px solid #d3d3d3;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+  padding: 3px 8px;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-title {
+  font-weight: 600;
+  color: #333;
+}
+/* Cabecera: título + embudo de filtro (estilo Ag-Grid) */
+.th-wrap { display: flex; align-items: center; gap: 6px; width: 100%; }
+.th-title { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.th-filter { flex: 0 0 auto; width: 13px; height: 13px; color: #b0b0b0; cursor: pointer; display: inline-flex; }
+.th-filter svg { width: 13px; height: 13px; }
+.th-filter:hover { color: #555; }
+.th-filter.active { color: #1a7a1a; }
+
+/* Popup de filtro */
+.filter-pop {
+  position: fixed;
+  z-index: 50;
+  width: 210px;
+  background: #ffffff;
+  border: 1px solid #b9b9b9;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+  border-radius: 3px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.filter-pop .fpop-title { font-weight: 600; color: #333; }
+.filter-pop select,
+.filter-pop input {
+  border: 1px solid #cfcfcf;
+  border-radius: 2px;
+  padding: 3px 6px;
+  font-size: 12px;
+}
+.filter-pop select:focus,
+.filter-pop input:focus { outline: none; border-color: #6aa0e0; }
+.filter-pop .fpop-btns { display: flex; gap: 6px; justify-content: flex-end; margin-top: 2px; }
+.filter-pop button {
+  padding: 3px 12px;
+  border: 1px solid #c4c4c4;
+  background: #fdfdfd;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.filter-pop button:hover { background: #ececec; }
+.filter-pop button.fpop-apply { background: #1a7a1a; border-color: #1a7a1a; color: #fff; }
+.filter-pop button.fpop-apply:hover { filter: brightness(0.93); }
+.tabulator .tabulator-row {
+  border-bottom: 1px solid #ededed;
+  background: #ffffff;
+}
+.tabulator .tabulator-row.tabulator-row-even { background: #ffffff; }
+.tabulator .tabulator-row:hover { background: #eef4fc !important; }
+/* Fila seleccionada: mismo azul + franja izquierda que el cursor de las listas,
+   para saber inequívocamente sobre qué fila actúan Eliminar/Copiar/etc. */
+.tabulator .tabulator-row.tabulator-selected,
+.tabulator .tabulator-row.tabulator-selected:hover {
+  background: #cfe3fb !important;
+  box-shadow: inset 3px 0 0 #1f5fa8;
+}
+.tabulator .tabulator-row .tabulator-cell {
+  border-right: 1px solid #f0f0f0;
+  padding: 2px 8px;
+}
+.tabulator .tabulator-cell .tnull { color: #aaaaaa; font-style: italic; }
+
+/* Cabecera de columna ordenada: flecha discreta */
+.tabulator .tabulator-col .tabulator-col-sorter { color: #888; }
+
+/* Menú contextual sobrio */
+.tabulator-menu {
+  background: #ffffff;
+  border: 1px solid #b9b9b9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 2px 0;
+}
+.tabulator-menu .tabulator-menu-item {
+  padding: 5px 14px;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.tabulator-menu .tabulator-menu-item:hover { background: #eef4fc; }
+.tabulator-menu .tabulator-menu-separator { border-top: 1px solid #e2e2e2; }
+.tabulator-menu .mi {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  color: #5a5a5a;
+}
+.tabulator-menu .mi svg { width: 15px; height: 15px; }
+.tabulator-menu .mi.excel { color: #1a7a1a; }
+
+/* -------- Barra de estado inferior -------- */
+.statusbar {
+  flex: 0 0 auto;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  background: #f0f0f0;
+  border-top: 1px solid #c8c8c8;
+  color: #555;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   MODO OSCURO - tema PB "Flat Design Dark". PB lo activa con
+   window.setDark(true). Paleta sobria tipo VS Code Dark.
+   color-scheme: dark pone en oscuro lo nativo (scrollbars, selects).
+   ============================================================ */
+body.dark { color-scheme: dark; color: #d4d4d4; background: #1e1e1e; }
+body.dark #app { background: #2d2d2d; }
+
+/* Toolbar y barra de estado */
+body.dark .toolbar { background: #2d2d2d; border-bottom-color: #3c3c3c; }
+body.dark .statusbar { background: #2d2d2d; border-top-color: #3c3c3c; color: #bbbbbb; }
+body.dark .status { color: #bbbbbb; }
+body.dark .status.error { color: #f48771; }
+body.dark .btn { background: #252526; }
+body.dark .btn:hover:not(:disabled) { background: color-mix(in srgb, var(--tema) 22%, #252526); }
+body.dark .btn:active:not(:disabled) { background: color-mix(in srgb, var(--tema) 34%, #252526); }
+body.dark .btn-run, body.dark .btn-save { background: var(--tema); color: #ffffff; }
+body.dark .zoom-tool { background: #252526; border-color: #3c3c3c; }
+body.dark .zoom-tool .zbtn { color: #bbbbbb; }
+body.dark .zoom-tool .zbtn:hover { color: #ffffff; }
+
+/* Sidebar (tablas/campos) */
+body.dark .sidebar { background: #252526; border-right-color: #3c3c3c; }
+body.dark .panel-tablas { border-bottom-color: #3c3c3c; }
+body.dark .panel-h { background: #2d2d2d; border-bottom-color: #3c3c3c; }
+body.dark .panel-h-sub { color: #569cd6; }
+body.dark .panel-search { background: #1e1e1e; border-color: #3c3c3c; color: #d4d4d4; }
+body.dark .panel-tablas .panel-list li:hover { background: #2a2d2e; }
+body.dark .panel-list li.sel { background: #094771; }
+body.dark .panel-list li.kbd-cur,
+body.dark .panel-tablas .panel-list li.kbd-cur:hover {
+  background: #094771 !important;
+  box-shadow: inset 3px 0 0 #569cd6;
+}
+body.dark .panel-list li.campo-msg { color: #777777; }
+body.dark .campo-todos { border-bottom-color: #3c3c3c; }
+body.dark .campo-item .pk { color: #d7a83e; border-color: #8a6d1f; }
+
+/* Divisores */
+body.dark .divider,
+body.dark .vdivider { background: #2d2d2d; border-color: #3c3c3c; }
+body.dark .divider:hover,
+body.dark .vdivider:hover { background: #094771; }
+
+/* Editor (CodeMirror) */
+body.dark .editor-pane { border-bottom-color: #3c3c3c; }
+body.dark .CodeMirror { background: #1e1e1e; color: #d4d4d4; }
+body.dark .CodeMirror-gutters { background: #252526; border-right-color: #3c3c3c; }
+body.dark .CodeMirror-linenumber { color: #858585; }
+body.dark .CodeMirror-cursor { border-left-color: #d4d4d4; }
+body.dark .CodeMirror-selected { background: #264f78 !important; }
+body.dark .cm-s-default .cm-keyword     { color: #569cd6; }
+body.dark .cm-s-default .cm-builtin     { color: #569cd6; }
+body.dark .cm-s-default .cm-type        { color: #4ec9b0; }
+body.dark .cm-s-default .cm-def         { color: #d4d4d4; }
+body.dark .cm-s-default .cm-variable    { color: #d4d4d4; }
+body.dark .cm-s-default .cm-variable-2  { color: #d4d4d4; }
+body.dark .cm-s-default .cm-variable-3  { color: #4ec9b0; }
+body.dark .cm-s-default .cm-string      { color: #ce9178; }
+body.dark .cm-s-default .cm-string-2    { color: #ce9178; }
+body.dark .cm-s-default .cm-comment     { color: #6a9955; }
+body.dark .cm-s-default .cm-number      { color: #b5cea8; }
+body.dark .cm-s-default .cm-operator    { color: #d4d4d4; }
+body.dark .cm-s-default .cm-bracket     { color: #d4d4d4; }
+body.dark .cm-s-default .cm-punctuation { color: #d4d4d4; }
+body.dark .cm-s-default .cm-meta        { color: #569cd6; }
+
+/* Resultados */
+body.dark .results { background: #1e1e1e; }
+body.dark .results-msg { color: #9a9a9a; }
+body.dark .results-msg.error { color: #f48771; }
+body.dark .results:not(.has-data)::before { opacity: 0.15; }
+
+/* Tabulator */
+body.dark .tabulator { background: #1e1e1e; }
+body.dark .tabulator .tabulator-header { background: #2d2d2d; border-bottom-color: #3c3c3c; color: #cccccc; }
+body.dark .tabulator .tabulator-header .tabulator-col { background: #2d2d2d; border-right-color: #3c3c3c; }
+body.dark .tabulator .tabulator-header .tabulator-col .tabulator-col-title { color: #cccccc; }
+body.dark .tabulator .tabulator-row { background: #1e1e1e; border-bottom-color: #2a2a2a; color: #d4d4d4; }
+body.dark .tabulator .tabulator-row.tabulator-row-even { background: #1e1e1e; }
+body.dark .tabulator .tabulator-row:hover { background: #2a2d2e !important; }
+body.dark .tabulator .tabulator-row.tabulator-selected,
+body.dark .tabulator .tabulator-row.tabulator-selected:hover {
+  background: #094771 !important;
+  box-shadow: inset 3px 0 0 #569cd6;
+}
+body.dark .tabulator .tabulator-row .tabulator-cell { border-right-color: #2a2a2a; }
+body.dark .tabulator .tabulator-cell input { background: #1e1e1e; color: #d4d4d4; }
+body.dark .tabulator .tabulator-cell .tnull { color: #666666; }
+body.dark .tabulator .tabulator-col .tabulator-col-sorter { color: #999999; }
+body.dark .tabulator .tabulator-placeholder .tabulator-placeholder-contents { color: #9a9a9a; }
+body.dark .th-filter { color: #777777; }
+body.dark .th-filter:hover { color: #cccccc; }
+body.dark .th-filter.active { color: #3fbf3f; }
+
+/* Popup de filtro y menu contextual */
+body.dark .filter-pop { background: #252526; border-color: #454545; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.6); }
+body.dark .filter-pop .fpop-title { color: #cccccc; }
+body.dark .filter-pop select,
+body.dark .filter-pop input { background: #1e1e1e; border-color: #3c3c3c; color: #d4d4d4; }
+body.dark .filter-pop button { background: #2d2d2d; border-color: #454545; color: #d4d4d4; }
+body.dark .filter-pop button:hover { background: #3a3a3a; }
+body.dark .filter-pop button.fpop-apply { background: #1a7a1a; border-color: #1a7a1a; color: #ffffff; }
+body.dark .tabulator-menu { background: #252526; border-color: #454545; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6); }
+body.dark .tabulator-menu .tabulator-menu-item { color: #d4d4d4; }
+body.dark .tabulator-menu .tabulator-menu-item:hover { background: #094771; }
+body.dark .tabulator-menu .tabulator-menu-separator { border-top-color: #3c3c3c; }
+body.dark .tabulator-menu .mi { color: #aaaaaa; }
+body.dark .tabulator-menu .mi.excel { color: #4ec96a; }
+
+/* ── Toast de confirmación (window.toast, lo invoca PB) ── */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%) translateY(10px);
+  background: #16a34a;
+  color: #ffffff;
+  font: 600 13px "Segoe UI", Tahoma, sans-serif;
+  padding: 8px 18px;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 10000;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

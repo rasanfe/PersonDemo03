@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consulta SQL</title>
+  <link rel="stylesheet" href="lib/codemirror.css" />
+  <link rel="stylesheet" href="lib/tabulator_simple.min.css" />
+  <link rel="stylesheet" href="style.css?v=17" />
+</head>
+<body>
+  <div id="app">
+    <div class="toolbar">
+      <div class="zoom-tool" title="Tamaño de letra del editor (también Ctrl + rueda)">
+        <button id="zoomMinus" class="zbtn" title="Reducir letra">A&#8722;</button>
+        <input type="range" id="zoomRange" min="10" max="28" step="1" value="13" />
+        <button id="zoomPlus" class="zbtn" title="Aumentar letra">A+</button>
+      </div>
+      <span class="edit-tools" id="editTools">
+        <button id="btnInsertar" class="btn" title="Insertar fila">&#43; Insertar</button>
+        <button id="btnEliminar" class="btn" title="Eliminar fila(s) seleccionada(s)">&#128465; Eliminar</button>
+        <button id="btnGuardar" class="btn btn-save" title="Guardar cambios en la base de datos">&#128190; Guardar</button>
+      </span>
+      <span class="status" id="status"></span>
+      <button id="btnRun" class="btn btn-run" title="Ejecutar (F5 / Ctrl+Enter)">&#9654; Ejecutar</button>
+      <button id="btnClear" class="btn" title="Limpiar resultados" disabled>Limpiar</button>
+      <button id="btnSidebar" class="btn btn-mini" title="Ocultar panel de tablas">&#9664;</button>
+      <button id="btnMaxEditor" class="btn btn-mini" title="Maximizar / restaurar editor">&#9650;</button>
+      <button id="btnMaxResults" class="btn btn-mini" title="Maximizar / restaurar resultados">&#9660;</button>
+    </div>
+
+    <div class="body">
+      <aside class="sidebar" id="sidebar">
+        <div class="panel panel-tablas">
+          <div class="panel-h">Tablas <span id="numTablas" class="panel-h-sub"></span></div>
+          <input id="buscaTabla" class="panel-search" placeholder="buscar tabla…" />
+          <ul id="listaTablas" class="panel-list"></ul>
+        </div>
+        <div class="panel panel-campos">
+          <div class="panel-h">Campos <span id="campTabla" class="panel-h-sub"></span></div>
+          <label class="campo-todos"><input type="checkbox" id="chkTodos" checked /> Todos (*)</label>
+          <ul id="listaCampos" class="panel-list"></ul>
+        </div>
+      </aside>
+
+      <div class="vdivider" id="vdivider" title="Arrastra para cambiar el ancho del panel"></div>
+
+      <div class="main">
+        <div class="editor-pane" id="editorPane">
+          <textarea id="sql"></textarea>
+        </div>
+        <div class="divider" id="divider" title="Arrastra para cambiar el alto del editor"></div>
+        <div class="results" id="results">
+          <div id="grid"></div>
+          <div class="results-msg" id="resultsMsg">Escribe una consulta SELECT y pulsa F5.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusbar"><span id="rowinfo"></span></div>
+  </div>
+
+  <script src="lib/codemirror.js"></script>
+  <script src="lib/sql.js"></script>
+  <script src="lib/tabulator.min.js"></script>
+  <script src="app.js?v=26"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+SELECT empresa, articulo, pallet, clase_pallet, cajas_pallet, planos_pallet, alturas, unidades_caja, m2_caja, pz_caja, proveedor
+FROM almartpallet

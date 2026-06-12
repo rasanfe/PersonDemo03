@@ -1,0 +1,4 @@
+SELECT empresa, tipoter, codigo, nombre, razon, cif, pais, provincia, cod_postal, localidad, domicilio, telefono, fax, moneda, riesgo, falta, apellidos, sexo, fecha_nacimiento, idioma, colocacion,
+       activo, tipopais, cl_domicilio, nu_domicilio, prefijo_provincia, distribuidor, codigo_cliente, cuenta, correos, abreviado, provisional, web, correo_electronico, tipo_proveedor,
+       bloqueo_compras, movil, usuario_web, pass_web, lpd_confidencial, tipo_empresa, extinguida, cod_centro, cod_contable, cod_gestor, facturae
+FROM genter
