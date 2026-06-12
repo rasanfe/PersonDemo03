@@ -326,6 +326,7 @@ end type
 
 event clicked;String  ls_theme
 String ls_envoirment, ls_urlBaseLocal, ls_urlBaseServer
+Boolean lb_reabrir_sql
 
 //[Setup]
 ls_theme = Trim(ddlb_theme.Text )
@@ -357,20 +358,27 @@ ElseIF ls_theme <> is_theme  AND  ls_theme = "Do Not Use Themes" THEN
 	MessageBox("Configuración Guardada", "Reinicie la aplicación para que los cambios tengan efecto.")
 	close(parent)
 ELSE
+	//12-06-2026 El visor SQL lleva un WebBrowser (WebView2) que no soporta el
+	//ApplyTheme en caliente (peta la aplicacion): se cierra antes de aplicar el
+	//tema y se reabre despues; al recargar, wf_tema lee el tema nuevo del ini
+	//y se lo aplica a la web (la consulta se conserva por la persistencia).
+	If IsValid(w_con_sql) Then
+		lb_reabrir_sql = TRUE
+		Close(w_con_sql)
+	End If
+
 	ApplyTheme (is_theme_path + ls_theme)
 	is_theme = ls_theme
+
+	If lb_reabrir_sql Then OpenSheet(w_con_sql, w_frame, 0, Layered!)
 END IF
 
 //Trampa pàra refrescar el Tema:
-If isvalid(w_mant_facturas) Then 
+If isvalid(w_mant_facturas) Then
 	w_mant_facturas.dw_lista.TriggerEvent(Constructor!)
 	w_mant_facturas.dw_1.TriggerEvent(Constructor!)
 End IF
 If isvalid(w_con_facturas) Then w_con_facturas.dw_1.TriggerEvent(Constructor!)
-If isvalid(w_con_sql) Then 
-	w_con_sql.dw_new.TriggerEvent(Constructor!)
-	w_con_sql.wf_cambiar_tema(ls_theme)
-End if
 If IsValid(w_frame) Then 	w_frame.iuo_web.TriggerEvent(Constructor!)
 If IsValid(w_dashboard) Then 	
 	w_dashboard.wb_1.NavigateToString(w_dashboard.in_dash.of_get_html())
