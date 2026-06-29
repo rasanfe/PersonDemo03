@@ -105,7 +105,7 @@ Este ejemplo ha ido creciendo artículo a artículo. Aquí tenéis el recorrido 
 ## 🔗 Repo PowerBuilder
 
 Tenéis el ejemplo publicado en modo solución aquí:
-👉 <https://github.com/rasanfe/PersonDemo>
+👉 <https://github.com/rasanfe/PersonDemo03>
 
 ## 🙌 Créditos
 
