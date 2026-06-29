@@ -58,10 +58,21 @@ La gracia "moderna" está en mezclar el cliente nativo con piezas **web** (HTML 
 
 ## ▶️ Cómo probarlo
 
-1. Clona el repositorio (viene **en modo solución**).
-2. Abre el workspace `persondemo.pbw` / target `persondemo.pbt` desde el IDE de PowerBuilder.
-3. Copia `CloudSetting_example.ini` a `CloudSetting.ini` y ajusta el entorno de la API (`Local` o `Server`) y tus credenciales.
-4. Compila y ejecuta, o prueba directamente el `persondemo.exe`. Como es **PowerClient**, también puedes desplegarlo y dejar que se actualice solo.
+Esto son **dos piezas**: este frontend de PowerBuilder y el **backend .NET 10**. Para probarlo en local necesitáis levantar las dos.
+
+### 1️⃣ Backend (.NET 10) en local
+
+1. Clona el repo del backend: 👉 <https://github.com/rasanfe/MyPowerServer>
+2. **Restaura la base de datos**: en la carpeta `database/` del backend tienes la copia comprimida (`PersonDemo03.rar` → backup de **SQL Server 2022**). Descomprímela y restáurala con el nombre **`PersonDemo03`** (el que espera `CloudSetting.ini`).
+3. Ajusta la cadena de conexión del backend en `appsettings.json` (`ConnectionStrings` → `PersonDemo03`); tienes la plantilla en `appsettings_example.json`.
+4. Arráncalo (con el IDE .NET que prefieras: Visual Studio, VS Code, Rider, SnapDevelop…). Por defecto queda escuchando en **`https://localhost:7251/api`**.
+
+### 2️⃣ Frontend (PowerBuilder)
+
+5. Clona **este** repositorio (viene **en modo solución**).
+6. Abre el workspace `persondemo.pbw` / target `persondemo.pbt` desde el IDE de PowerBuilder.
+7. Copia `CloudSetting_example.ini` a `CloudSetting.ini`, pon `Envoirment = Local` (apunta a `UrlBaseLocal`) y rellena tus credenciales.
+8. Compila y ejecuta, o prueba directamente el `persondemo.exe`. Como es **PowerClient**, también puedes desplegarlo y dejar que se actualice solo.
 
 ## 📌 Conferencias y artículos
 
