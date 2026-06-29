@@ -4,7 +4,7 @@
 
 ![PowerBuilder](https://img.shields.io/badge/PowerBuilder-2025-orange?style=flat-square&logo=appveyor&logoColor=white)
 ![Despliegue](https://img.shields.io/badge/PowerClient-2025.2.6430.9-success?style=flat-square)
-![Backend](https://img.shields.io/badge/Backend-.NET%2010%20%2F%20SnapDevelop-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![Backend](https://img.shields.io/badge/Backend-.NET%2010-512BD4?style=flat-square&logo=dotnet&logoColor=white)
 ![Dashboard](https://img.shields.io/badge/Dashboard-Chart.js-FF6384?style=flat-square&logo=chartdotjs&logoColor=white)
 ![Grid](https://img.shields.io/badge/Grid-AG--Grid%20%2F%20Tabulator-1A73E8?style=flat-square)
 ![Blog](https://img.shields.io/badge/blog-rsrsystem-FF5722?style=flat-square&logo=blogger&logoColor=white)
@@ -23,7 +23,7 @@ Dentro encontraréis un poco de todo:
 
 - **CRUD clásico** de mantenimiento (personas, facturas, listados y reports).
 - **Despliegue como PowerClient** (instalador/actualización automática del cliente; versión `2025.2.6430.9`).
-- **Backend propio**: una **API genérica en .NET 10 / SnapDevelop** (mi "Cloud Framework"), configurable en `CloudSetting.ini` (entorno local o servidor), al estilo PowerServer pero montado a mi manera.
+- **Backend propio**: una **API genérica en .NET 10** (mi "Cloud Framework"), configurable en `CloudSetting.ini` (entorno local o servidor), al estilo PowerServer pero montado a mi manera.
 - **Dashboards HTML embebidos** con **Chart.js** dentro de la propia aplicación.
 - Una ventana de **Consulta SQL asistida** (`w_con_sql`) con **dos variantes** de grid web que conviven: **AG-Grid (React)** y la **2.0** en HTML/JS puro (**CodeMirror + Tabulator**). La misma ventana sirve las dos, así que ninguna está jubilada: elijo la que me convenga.
 - **Temas** (incluido *Flat Design Dark*), **ribbon menu** y una ventana **MDI con imagen de fondo**.
@@ -53,7 +53,7 @@ La gracia "moderna" está en mezclar el cliente nativo con piezas **web** (HTML 
 
 - **PowerBuilder 2025** (compilado con el Runtime `25.1.0.6430`).
 - **Windows 10/11**.
-- El **backend .NET 10 / SnapDevelop** (mi Cloud Framework) accesible para la parte de datos, configurable en `CloudSetting.ini`, apartado `[Api]`: `UrlBaseLocal` / `UrlBaseServer`.
+- El **backend .NET 10** (mi Cloud Framework) accesible para la parte de datos, configurable en `CloudSetting.ini`, apartado `[Api]`: `UrlBaseLocal` / `UrlBaseServer`.
 - Conexión a la base de datos correspondiente al backend.
 
 ## ▶️ Cómo probarlo
