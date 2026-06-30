@@ -4,5 +4,6 @@
 # Regenerable (no versionar)
 *.pra
 *.pbd
+*.pbl
 *.exe
 *.bat
