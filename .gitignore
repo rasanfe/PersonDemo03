@@ -3,3 +3,6 @@
 
 # Regenerable (no versionar)
 *.pra
+*.pbd
+*.exe
+*.bat
