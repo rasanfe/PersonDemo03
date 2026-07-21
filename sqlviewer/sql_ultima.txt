@@ -1,2 +1,2 @@
-SELECT empresa, tipoter, codigo, razon, cif
+SELECT tipoter, codigo, razon, cif
 FROM genter
