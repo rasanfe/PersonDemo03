@@ -1,5 +1,7 @@
 # 🚀 Mi Cloud Framework — PersonDemo
 
+> 🆕 **La evolución de este ejemplo** (web React/PWA embebida en PowerBuilder con WebView2, sesión compartida por ticket y la vuelta JS → PB) está en **[AppeonSpain2026](https://github.com/rasanfe/AppeonSpain2026)**: la charla de Barcelona, 27-10-2026.
+
 **(antes "Mi PowerServer") · Porque las malas prácticas a veces molan 😎**
 
 ![PowerBuilder](https://img.shields.io/badge/PowerBuilder-2025-orange?style=flat-square&logo=appveyor&logoColor=white)
